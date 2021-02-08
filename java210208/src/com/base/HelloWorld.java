@@ -8,6 +8,8 @@ public class HelloWorld {
 		HelloWorld hw = new HelloWorld();
 		hw.age = 28;
 		System.out.println("당신의 나이는 " + hw.age + "입니다");
+		System.out.println("2차 수정입니다");
+		
 	}
 
 }
