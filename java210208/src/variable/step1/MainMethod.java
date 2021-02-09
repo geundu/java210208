@@ -26,9 +26,9 @@ public class MainMethod {
 		if (true) {
 			System.out.println("나는 문자열이 아니다");
 		}
-		else {
-			System.out.println("나는 문자열이 아니다");
-		}
+//		else {
+//			System.out.println("나는 문자열이 아니다");
+//		}
 		
 		
 	}

@@ -9,12 +9,6 @@ public class StaticTest {
 	static void avg() { // 사용자 정의 메서드
 		System.out.println("avg 호출 성공");
 	}
-	int toInt(String s) {
-		return Integer.parseInt(s);
-	}
-	static int toIntStatic(String s) {
-		return Integer.parseInt(s);
-	}
 
 	public static void main(String[] args) {
 		//main은 자바가 제공하는 메서드인가? true
@@ -25,14 +19,12 @@ public class StaticTest {
 			System.out.println("argument가 없음");
 			return; //main 종료
 		}
-		StaticTest st = new StaticTest();
 
-		avg(); //static method
-		int	toint = st.toInt(args[0]);
-		int	toint_s = toIntStatic(args[0]);
+		int	toint = Integer.parseInt(args[0]);
 		System.out.println(toint + 10);
-		System.out.println(toint_s + 10);
+		System.out.println(" " + toint + 10);
 		
+		StaticTest.avg(); //static method
 	}
 
 }

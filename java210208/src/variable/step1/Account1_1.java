@@ -35,5 +35,6 @@ public class Account1_1 {
 			engScore[i] = s.nextDouble();
 			acc.mean(acc.sum(korScore[i], mathScore[i], engScore[i]), classNum);
 		}
+		s.close();
 	}
 }
