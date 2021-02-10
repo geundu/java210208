@@ -23,6 +23,10 @@ public class StaticTest {
 		int	toint = Integer.parseInt(args[0]);
 		System.out.println(toint + 10);
 		System.out.println(" " + toint + 10);
+		/* int + String = String
+		 * double + String = String
+		 * boolean + String = String
+		 */
 		
 		StaticTest.avg(); //static method
 	}
