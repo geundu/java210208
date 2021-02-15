@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Account {
 	//메소드 안에 있는 , 는 열거형 연산자라고 한다.
-	//접근제한자(Access modifier) - 수정자 - 리턴타입 - 메서드이름(매개변수 1, 2...)
+	//접근제한자(Access modifier), 수정자 - 리턴타입 - 메서드이름(매개변수 1, 2...)
 	double sum(double kor,	double math, double eng) {
 		double sumScore = kor + math + eng;
 		System.out.print("점수 합 : " + sumScore + ", ");

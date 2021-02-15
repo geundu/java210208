@@ -22,8 +22,8 @@ public class Variable {
 		//system:나의컴퓨터 out속성:출력장치, print():이건 illegal, print(int i), print(double pi), print("안녕")
 		Variable v = new Variable();
 		
-		System.out.print(10+" "); //메서드를 호출할 수 있는가?? 주소.methodA();
-		System.out.print(v.methodB(1)+" "); //메서드를 호출할 수 있는가?? 주소.methodA();
+		System.out.print(10 + " ");
+		System.out.print(v.methodB(1) + " "); //메서드를 호출할 수 있는가?? 주소.methodA();
 		System.out.print(5); //메서드를 호출할 수 있는가?? 주소.methodA();
 		//메서드를 선언할 때는 {}를 사용
 		//호출할 때는 ;

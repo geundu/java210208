@@ -16,7 +16,7 @@ public class MainMethod {
 		if (args[0] instanceof String) {
 			System.out.println("나는 문자열이다");
 		}
-//		if (args[0] instanceof Integer) {	//인티저와 스트링을 비교할 수 없기 때문에 에러
+//		if (args[0] instanceof Integer) {
 //			System.out.println("나는 정수형이다");
 //		}
 		else {

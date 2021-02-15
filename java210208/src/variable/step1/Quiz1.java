@@ -25,7 +25,7 @@ public class Quiz1 {
 	}
 	
 	void methodA(int i) {
-		System.out.println("void methodA(int i) call, i = "+i);
+		System.out.println("void methodA(int i) call, i = " + i);
 	}
 	
 	int methodA(double d) {

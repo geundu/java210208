@@ -8,9 +8,9 @@ public class ATest {
 	int a;
 	int b;
 	
-	ATest() {
-		a = 3;
-		b = 0;
+	ATest(int a, int b) {
+		this.a = a;
+		this.b = b;
 		System.out.println("ATest() called");
 	}
 

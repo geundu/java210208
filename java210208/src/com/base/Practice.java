@@ -1,28 +1,38 @@
 package com.base;
 
+import java.util.Scanner;
+
 public class Practice {
 
 	public static void main(String[] args) {
 		
-		ATest ft = new ATest();
+		int H = 0;
+		int M = 0;
 		
-		int a_ = ft.a;
-		System.out.println(a_);
+		Scanner s = new Scanner(System.in);
 		
-		int evenSum = 0;
-		int oddSum = 0;
+		H = s.nextInt();
+		M = s.nextInt();
 		
-		for (int i = 1; i <= 10; i++) {
-			if (i % 2 == 0) {
-				evenSum += i;
+		if (H < 24 && H >= 0 && M < 60 && M >= 0) {
+			if (M > 45) {
+				System.out.printf("%d %d", H, M - 45);
 			}
-			else {oddSum += i;}
+			else if (M < 45) {
+				if (H == 0) {
+					System.out.printf("%d %d", H + 23, M + 15);
+				}
+				else {
+					System.out.printf("%d %d", H - 1, M + 15);
+				}
+			}
+			else {
+				System.out.printf("%d %d", H, 0);
+			}
 		}
-		System.out.println("1~10 짝수의 합 = " + evenSum);
-		System.out.println("1~10 홀수의 합 = " + oddSum);
-		
-		
-		
+		else {
+			System.out.println("H = 0~23, M = 0~59");
+		}
+		s.close();
 	}
-
 }

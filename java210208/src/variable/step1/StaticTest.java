@@ -12,7 +12,7 @@ public class StaticTest {
 
 	public static void main(String[] args) {
 		//main은 자바가 제공하는 메서드인가? true
-		//사용자 정의 메서드(user definition method) 사용 가능
+		//사용자 정의 메서드(user defined method) 사용 가능
 		
 		if (args.length == 0) {
 			//아래 문장은 조건에 따라 실행되지 않을 수도 있다
@@ -28,7 +28,7 @@ public class StaticTest {
 		 * boolean + String = String
 		 */
 		
-		StaticTest.avg(); //static method
+		avg(); //static method
 	}
 
 }
