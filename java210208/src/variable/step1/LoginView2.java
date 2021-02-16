@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 
 public class LoginView2 extends JFrame implements ActionListener {
 //	인터페이스. 결합도 낮추는 코드 작성할 때 필요, 클래스 설계 시 필요
-	
 //	화면 그리기 구현
 	
 	JButton jbtn_login = new JButton("로그인");
@@ -27,7 +26,7 @@ public class LoginView2 extends JFrame implements ActionListener {
 		
 	}
 	//같은 이름의 메서드를 여러 개 정의할 수 있다. 뒷받침하는 개념이 메서드 오버로딩(파라미터 개수 타입 달라야 함) 오버라이딩(이름이 같고 상속관계)
-	//어노테이션
+	//@Override는 annotation이라고 함(메타데이터)
 	@Override
 	public void actionPerformed(ActionEvent e) {//콜백메서드. 내가 호출하는 메서드가 아닌 이벤트 감지가 일어나면 자동호출
 		if (jbtn_login == e.getSource()) { //이벤트 감지는 컴퓨터가, 버튼의 주소는 내가 정의. 주소가 동일한가?
