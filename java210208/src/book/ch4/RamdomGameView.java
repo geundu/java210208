@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -52,13 +53,20 @@ public class RamdomGameView extends JFrame implements ActionListener{
 	
 	public static void main(String[] args) {
 		RamdomGameView rgview = new RamdomGameView();
+		
+		
 
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (jbtn_new == e.getSource()) {
-			
+			this.repaint();
+			Game g = new Game();
+			Random r = new Random();
+			int randNum = r.nextInt(10);
+			System.out.println("생성된 숫자 " + randNum);
+			g.isThisGame(randNum);
 		}
 		else if (jbtn_dap == e.getSource()) {
 			
