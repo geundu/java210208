@@ -6,6 +6,7 @@ public class Practice {
 
 	public static void main(String[] args) {
 		
+		
 //		int H = 0;
 //		int M = 0;
 //		
