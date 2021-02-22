@@ -3,14 +3,15 @@ package book.ch4;
 import java.util.Random;
 import java.util.Scanner;
 
+
 class Rand {
 	int[] makeRandNum(int[] cipherArr) {
 		Random rand = new Random();
 		
-		cipherArr[0] = rand.nextInt(9) + 1;
+		cipherArr[0] = rand.nextInt(9) + 1;	//0~8 + = 1~9
 		
 		do {
-			cipherArr[1] = rand.nextInt(10);
+			cipherArr[1] = rand.nextInt(10); //0~9
 		} 
 		while(cipherArr[0] == cipherArr[1]);
 		
@@ -55,6 +56,24 @@ public class IsThisGameMan_2 {
 		}
 		return scanArr;
 	}
+	
+	int[] inputNum2(int[] scanArr, int temp) {
+		for (int i = scanArr.length - 1; i >= 0; i--) {	//입력한 숫자 scanArr 저장
+			scanArr[i] = temp % 10;
+			temp /= 10;
+		}
+		return scanArr;
+	}
+	
+//	int[] inputNum2(int[] scanArr, int temp) {
+//		int imsi = 0; 
+//		
+//		for (int i = 0; i < scanArr.length; i++) {	//입력한 숫자 scanArr 저장
+//			imsi = temp / 100;
+//			scanArr[i] = (temp % 100) / 10;
+//		}
+//		return scanArr;
+//	}
 
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
@@ -73,7 +92,7 @@ public class IsThisGameMan_2 {
 			System.out.print("겹치는 숫자가 없는 세 자리 수를 입력하시오 : ");
 			int temp = scan.nextInt();
 			
-			g.inputNum(scanArr, temp);
+			g.inputNum2(scanArr, temp);
 			
 			c.compArr(cipherArr, scanArr);
 

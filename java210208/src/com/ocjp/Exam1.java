@@ -21,9 +21,13 @@ public class Exam1 {
 			System.out.println("else");
 		}
 		System.out.printf("%d, %d\n", i, j);
+//		System.out.print(i + ", " + j);
 		
 		i = 1;
 		j = 2;
+		
+		int temp_i = i;
+		int temp_j = j;
 		
 		if ((++i > j--) && (++i > j)) {
 			System.out.println("if");
@@ -31,6 +35,8 @@ public class Exam1 {
 		else {
 			System.out.println("else");
 		}
+		
+		System.out.println(temp_i + ", " + temp_j);
 		System.out.printf("%d, %d\n", i, j);
 	}
 }

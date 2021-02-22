@@ -2,6 +2,7 @@ package book.ch7;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 class RandArrayQuiz {
 	
@@ -44,9 +45,9 @@ class RandArrayQuiz {
 
 public class ArrayQuiz1 {
 	public static void main(String[] args) {
-		
-		RandArrayQuiz[] objArray = new RandArrayQuiz[1];
+		RandArrayQuiz[] objArray = new RandArrayQuiz[2];
 		objArray[0] = new RandArrayQuiz();
+//		objArray[1] = objArray[0];
 		int[] randArray = new int[10];
 		
 		objArray[0].randPrint(objArray[0].randCalc(randArray));

@@ -3,10 +3,26 @@ package com.base;
 import java.util.Scanner;
 
 public class Practice {
-
+	
+	public void testIfA() {
+		if(testIfB("true")) {
+			System.out.println("True");
+		}
+		else {
+			System.out.println("Not True");
+		}
+	}
+	
+	public Boolean testIfB(String str) {
+		return Boolean.valueOf(str);
+	}
+	
 	public static void main(String[] args) {
+		Practice p = new Practice();
 		
+		p.testIfA();
 		
+
 //		int H = 0;
 //		int M = 0;
 //		
@@ -35,32 +51,6 @@ public class Practice {
 //			System.out.println("H = 0~23, M = 0~59");
 //		}
 //		s.close();
-		
-//		int x = 5;
-//		boolean b1 = true;
-//		boolean b2 = false;
-//		
-//		if ((x == 4) && !b2) {
-//			System.out.print("1 ");
-//		}
-//		System.out.print("2 ");
-//		if ((b2 = true) && b1) {
-//			System.out.println("3 ");
-//		}
-		
-//		result : D
-		
-//		String #name = "Jane Doe";
-//		int $age=24;
-//		double _height = 123.5;
-//		double ~temp = 37.5;
-		
-		int x = 5;
-		Practice p = new Practice();
-		p.doStuff(x);
-		System.out.println("main x = " + x);
-	}
-	void doStuff(int x) {
-		System.out.println("doStuff x = " + x++);
+
 	}
 }

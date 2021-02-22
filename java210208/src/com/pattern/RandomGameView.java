@@ -70,7 +70,7 @@ public class RandomGameView extends JFrame implements ActionListener{
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) { //콜백메서드 main도 같음 유저가 따로 콜을 하지 않아도 시스템에서 알아서 콜하는구조
 		String command = e.getActionCommand();
 		System.out.println(command);
 		if (e.getSource() == jbtn_exit) {
