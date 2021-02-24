@@ -2,8 +2,8 @@ package com.quiz0222;
 
 public class Member80VO {
 	
-	private String mem_id = null;  
-	private String mem_pw = null;          
+	private String mem_id = null;
+	private String mem_pw = null;
 	private boolean gender = false;
 	/*
 	 * 생성자는 리턴타입이 없다
@@ -34,8 +34,6 @@ public class Member80VO {
 		this.mem_pw = mem_pw;
 		this.gender = gender;
 	}
-	
-	
 	
 	public String getMem_id() {
 		return mem_id;

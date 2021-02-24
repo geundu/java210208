@@ -1,14 +1,23 @@
 package com.quiz0222;
 
 public class EmpVO {
+	
+	public DeptVO getDvo() {
+		return dvo;
+	}
+	public void setDvo(DeptVO dvo) {
+		this.dvo = dvo;
+	}
+	
 	private int empno = 0;
 	private String ename = null;
-	private String job =null;
+	private String job = null;
 	private int mgr = 0;
 	private String hiredate = null;
-	private int sal = 0;
-	private int comm = 0;
+	private double sal = 0.0;
+	private double comm = 0.0;
 	private int deptno = 0;
+	private DeptVO dvo = null;
 	
 	public int getEmpno() {
 		return empno;
@@ -40,13 +49,13 @@ public class EmpVO {
 	public void setHiredate(String hiredate) {
 		this.hiredate = hiredate;
 	}
-	public int getSal() {
+	public double getSal() {
 		return sal;
 	}
 	public void setSal(int sal) {
 		this.sal = sal;
 	}
-	public int getComm() {
+	public double getComm() {
 		return comm;
 	}
 	public void setComm(int comm) {
@@ -58,5 +67,4 @@ public class EmpVO {
 	public void setDeptno(int deptno) {
 		this.deptno = deptno;
 	}
-
 }

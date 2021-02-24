@@ -9,7 +9,7 @@ public class MemberList {
 		mvo.setMem_id("apple");
 		mvo.setMem_pw("abcd1234");
 		mvo.setGender(true);
-		mvo = new Member80VO("tomato", "123", true);
+//		mvo = new Member80VO("tomato", "123", true);
 		Gson gson = new Gson();
 		String temp = gson.toJson(mvo);
 		System.out.println(temp);

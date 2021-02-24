@@ -1,6 +1,7 @@
 package com.quiz0222;
 
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,64 +9,119 @@ import java.sql.SQLException;
 
 public class TestVO {
 	
-	public void testConect() {
+	public void testConect(EmpVO[] evoArray, DeptVO[] dvoArray) {
 		
-		Connection conn = null; //자바와 데이터베이스를 연결
-		Statement stmt = null; //쿼리문 대기 및 설정
-		ResultSet rset = null; //결과값 받아오기
+		Connection conn = null;		//자바 오라클 연결
+		Statement stmt = null;		//쿼리문 대기 및 설정
+		ResultSet rset = null;		//결과값 받아오기
 		
 		try {
-			String dbURL = "jdbc:oracle:thin:@121.139.85.156:15210:orcl11";
-			String dbID = "SCOTT";
-			String dbPassword = "tiger";
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			conn = DriverManager.getConnection(dbURL, dbID, dbPassword);
-			System.out.println(conn);
-			String sql = "SELECT * FROM emp";
-//			String sql = "SELECT dvo.deptno, d.dname, e.ename FROM dvo, evo"
-//					+ "WHERE evo.deptno(+) = d.deptno";
+			String dbURL = "jdbc:oracle:thin:@121.139.85.156:15210:orcl11";	//오라클 외부 url
+			String dbID = "SCOTT";											//아이디
+			String dbPassword = "tiger";									//패스워드
+			Class.forName("oracle.jdbc.driver.OracleDriver");				//jdbc 드라이버 파일
+			conn = DriverManager.getConnection(dbURL, dbID, dbPassword);	//오라클 연결
+//			System.out.println(conn);
+			String sql = "SELECT * FROM emp";								//쿼리문
+//			String sql = "SELECT dvo.deptno, dvo.dname, evo.ename FROM dept dvo, emp evo"
+//					+ "WHERE evo.deptno(+) = dvo.deptno";
 			
-			stmt = conn.createStatement();
-			rset = stmt.executeQuery(sql);
+			stmt = conn.createStatement();									//이건 뭐하는 거지
+			rset = stmt.executeQuery(sql);									//쿼리문 실행결과 리턴
 			
-			while (rset.next()) {
-				System.out.println(rset.getInt("EMPNO") + ", " +
-                        rset.getString("ENAME") + ", " +
-                        rset.getString("JOB") + ", " +
-                        rset.getInt("MGR") + ", " +
-                        rset.getString("HIREDATE") + ", " +
-                        rset.getInt("SAL") + ", " +
-                        rset.getInt("COMM") + ", " +
-                        rset.getInt("DEPTNO")
-						);
-				
+			
+			int i = 0, j = 0;
+			
+			DeptVO[] dVOS = null;							//선생님 피드백
+			EmpVO eVO = null;
+			DeptVO dVO = null;
+			ArrayList al = new ArrayList();
+			
+			while (rset.next()) {											//rset.next() true인 동안
+				eVO = new EmpVO();											//새 인스턴스
+				eVO.setEmpno(rset.getInt("EMPNO"));							//evo에 불러온 값 set
+				eVO.setEname(rset.getString("ENAME"));
+				eVO.setJob(rset.getString("JOB"));
+				eVO.setMgr(rset.getInt("MGR"));
+				eVO.setHiredate(rset.getString("HIREDATE"));
+				eVO.setSal(rset.getInt("SAL"));
+				eVO.setComm(rset.getInt("COMM"));
+				eVO.setDeptno(rset.getInt("DEPTNO"));
+//				dVO.setEvo(eVO);
+				evoArray[i] = eVO;											//evo객체배열에 저장
+				if (i < evoArray.length - 1)
+					i++;
 			}
 			
+			for (EmpVO e : evoArray) {										//EmpVO[] 출력
+				System.out.println(e.getEmpno() + " "
+						+ e.getEname() + " "
+						+ e.getJob() + " "
+						+ e.getMgr() + " "
+						+ e.getHiredate() + " "
+						+ e.getSal() + " "
+						+ e.getComm() + " "
+						+ e.getDeptno());
+			}
+			System.out.println();
+			String sql2 = "SELECT * FROM dept";
+			rset = stmt.executeQuery(sql2);									//쿼리문2 실행결과 리턴
+			
+			
+			
+			while(rset.next()){
+				dVO = new DeptVO();
+				dVO.setDeptno(rset.getInt("DEPTNO"));
+				dVO.setDname(rset.getString("DNAME"));
+				dVO.setLoc(rset.getString("LOC"));
+				al.add(dVO);
+			}
+			dVOS = new DeptVO[al.size()];
+			
+			
+			for(DeptVO dVO2 : dVOS){
+				  System.out.println(dVO2.getDeptno() + " "
+						  + dVO2.getDname() + " "
+						  + dVO2.getLoc());
+				}
+//			while (rset.next()) {											//rset.next() true인 동안
+//				dvo.setDeptno(rset.getInt("DEPTNO"));
+//				dvo.setDname(rset.getString("DNAME"));
+//				dvo.setLoc(rset.getString("LOC"));
+//				dvoArray[j] = dvo;
+//				dvo = new DeptVO();
+//				if (j < evoArray.length - 1)
+//					j++;
+//			}
+//			
+//			for (DeptVO d : dvoArray) {
+//				System.out.println(d.getDeptno() + " "
+//						+ d.getDname() + " "
+//						+ d.getLoc());
+//			}
 		}
-		catch (ClassNotFoundException e1){
-			e1.printStackTrace();
-		} catch (SQLException e2) {
-			e2.printStackTrace();
+		catch (ClassNotFoundException e){
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		finally {
 			try {
 				rset.close();
 				stmt.close();
 				conn.close();
-			} catch (SQLException e3) {
-				e3.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 	}
 	
-
 	public static void main(String[] args) {
 		EmpVO evo = new EmpVO();
 		DeptVO dvo = new DeptVO();
-		
 		TestVO tvo = new TestVO();
-		tvo.testConect();
-
+		EmpVO[] evoArray = new EmpVO[14];
+		DeptVO[] dvoArray = new DeptVO[4];
+		tvo.testConect(evoArray, dvoArray);
 	}
-
 }
