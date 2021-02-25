@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Practice {
 	
 	public void testIfA() {
-		if(testIfB("true")) {
+		if(testIfB("True")) {
 			System.out.println("True");
 		}
 		else {
