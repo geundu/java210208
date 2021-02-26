@@ -2,6 +2,30 @@ package com.quiz0222;
 
 public class EmpVO {
 	
+	public EmpVO() {
+		System.out.println("Default Constructor called");
+	}
+	
+	public EmpVO(int empno) {
+		this.empno = empno;
+	}
+	
+	public EmpVO(int empno, String ename, String job,
+				int mgr, String hiredate, double sal,
+				double comm, int deptno, DeptVO dvo) {
+		this.empno    = empno;
+		this.ename    = ename;
+		this.job      = job;
+		this.mgr      = mgr;
+		this.hiredate = hiredate;
+		this.sal      = sal;
+		this.comm     = sal;
+		this.deptno   = deptno;
+		this.dvo      = dvo;							//중요함.
+	}
+	
+	
+	
 	public DeptVO getDvo() {
 		return dvo;
 	}
@@ -52,7 +76,7 @@ public class EmpVO {
 	public double getSal() {
 		return sal;
 	}
-	public void setSal(int sal) {
+	public void setSal(double sal) {
 		this.sal = sal;
 	}
 	public double getComm() {

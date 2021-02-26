@@ -63,12 +63,15 @@ public class TestVO {
 						+ e.getComm() + " "
 						+ e.getDeptno());
 			}
+			
+			
+			
 			System.out.println();
 			String sql2 = "SELECT * FROM dept";
 			rset = stmt.executeQuery(sql2);									//쿼리문2 실행결과 리턴
 			
 			
-			
+			/******************************************************************
 			while(rset.next()){
 				dVO = new DeptVO();
 				dVO.setDeptno(rset.getInt("DEPTNO"));
@@ -84,37 +87,40 @@ public class TestVO {
 						  + dVO2.getDname() + " "
 						  + dVO2.getLoc());
 				}
-//			while (rset.next()) {											//rset.next() true인 동안
-//				dvo.setDeptno(rset.getInt("DEPTNO"));
-//				dvo.setDname(rset.getString("DNAME"));
-//				dvo.setLoc(rset.getString("LOC"));
-//				dvoArray[j] = dvo;
-//				dvo = new DeptVO();
-//				if (j < evoArray.length - 1)
-//					j++;
-//			}
-//			
-//			for (DeptVO d : dvoArray) {
-//				System.out.println(d.getDeptno() + " "
-//						+ d.getDname() + " "
-//						+ d.getLoc());
-//			}
-		}
+			*****************************************************************/
+			while (rset.next()) {		//rset.next() true인 동안		
+				dVO = new DeptVO();
+				dVO.setDeptno(rset.getInt("DEPTNO"));
+				dVO.setDname(rset.getString("DNAME"));
+				dVO.setLoc(rset.getString("LOC"));
+				dvoArray[j] = dVO;
+				if (j < evoArray.length - 1)
+					j++;
+			}//////////////////////////////end of while(set and store dvo)
+			
+			for (DeptVO d : dvoArray) {
+				System.out.println(d.getDeptno() + " "
+						+ d.getDname() + " "
+						+ d.getLoc());
+			}////////////////////////end of for(dvoArray print)
+		}/////////////////end of try
 		catch (ClassNotFoundException e){
 			e.printStackTrace();
-		} catch (SQLException e) {
+		}////////////////end of catch ClassNotFoundException
+		catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}////////////////end of catch SQLException
 		finally {
 			try {
 				rset.close();
 				stmt.close();
 				conn.close();
-			} catch (SQLException e) {
+			}//////////////end of try in finally
+			catch (SQLException e) {
 				e.printStackTrace();
-			}
-		}
-	}
+			}//////////////end of catch SQLException in finally
+		}/////////////////end of finally
+	}//////////////////////end of testConnect
 	
 	public static void main(String[] args) {
 		EmpVO evo = new EmpVO();
