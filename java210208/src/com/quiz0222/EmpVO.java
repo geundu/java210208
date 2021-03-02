@@ -3,7 +3,7 @@ package com.quiz0222;
 public class EmpVO {
 	
 	public EmpVO() {
-		System.out.println("Default Constructor called");
+//		System.out.println("Default Constructor called");
 	}
 	
 	public EmpVO(int empno) {

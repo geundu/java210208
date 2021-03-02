@@ -3,54 +3,25 @@ package com.base;
 import java.util.Scanner;
 
 public class Practice {
-	
-	public void testIfA() {
-		if(testIfB("True")) {
-			System.out.println("True");
-		}
-		else {
-			System.out.println("Not True");
-		}
-	}
-	
-	public Boolean testIfB(String str) {
-		return Boolean.valueOf(str);
-	}
-	
+
 	public static void main(String[] args) {
-		Practice p = new Practice();
 		
-		p.testIfA();
+		Scanner sc = new Scanner(System.in);
 		
-
-//		int H = 0;
-//		int M = 0;
-//		
-//		Scanner s = new Scanner(System.in);
-//		
-//		H = s.nextInt();
-//		M = s.nextInt();
-//		
-//		if (H < 24 && H >= 0 && M < 60 && M >= 0) {
-//			if (M > 45) {
-//				System.out.printf("%d %d", H, M - 45);
-//			}
-//			else if (M < 45) {
-//				if (H == 0) {
-//					System.out.printf("%d %d", H + 23, M + 15);
-//				}
-//				else {
-//					System.out.printf("%d %d", H - 1, M + 15);
-//				}
-//			}
-//			else {
-//				System.out.printf("%d %d", H, 0);
-//			}
-//		}
-//		else {
-//			System.out.println("H = 0~23, M = 0~59");
-//		}
-//		s.close();
-
+		System.out.print("정수를 입력하시오 : ");
+		int bound = sc.nextInt();
+		
+		for (int i = 0; i < bound; i++) {
+			for (int j = 0; j < bound; j++) {
+				if (j < i) {
+					System.out.print(" ");
+				}
+				else {
+					System.out.print("*");
+				}
+			}/////////////////end of j for
+			System.out.println();
+		}/////////////////////end of i for
+		sc.close();
 	}
 }
