@@ -8,6 +8,10 @@ public class Practice {
 		
 		Scanner sc = new Scanner(System.in);
 		
+		int x = Integer.parseUnsignedInt(sc.next());
+		System.out.println(x);
+		
+		
 		System.out.print("정수를 입력하시오 : ");
 		int bound = sc.nextInt();
 		
