@@ -20,32 +20,30 @@ import javax.swing.table.DefaultTableModel;
 import com.quiz0222.DeptVO;
 import com.util.DBConnectionMgr;
 
-
 public class AddressBook2 implements ActionListener {
 	//선언부
-	JFrame jf = null;
-	JMenuBar jmb = new JMenuBar();
-	JMenu jm_file = new JMenu("FILE");
-	JMenu jm_oracle = new JMenu("DB 연동");
-	JMenuItem jmi_sel = new JMenuItem("상세조회");
-	JMenuItem jmi_selAll = new JMenuItem("전체조회");
-	JMenuItem jmi_ins = new JMenuItem("입력");
-	JMenuItem jmi_upd = new JMenuItem("수정");
-	JMenuItem jmi_del = new JMenuItem("삭제");
-	JMenuItem jmi_exit = new JMenuItem("종료");
-	JMenuItem jmi_dbTest = new JMenuItem("오라클 연결");
-	AddressDialog2 aDia = new AddressDialog2();
-	static AddressBook2 aBook = null;
-	DeptVO dVO = null;
+	JFrame 				jf 			= null;
+	JMenuBar 			jmb 		= new JMenuBar();
+	JMenu 				jm_file 	= new JMenu("FILE");
+	JMenu 				jm_oracle 	= new JMenu("DB 연동");
+	JMenuItem 			jmi_sel 	= new JMenuItem("상세조회");
+	JMenuItem 			jmi_selAll 	= new JMenuItem("전체조회");
+	JMenuItem 			jmi_ins 	= new JMenuItem("입력");
+	JMenuItem 			jmi_upd 	= new JMenuItem("수정");
+	JMenuItem 			jmi_del 	= new JMenuItem("삭제");
+	JMenuItem 			jmi_exit 	= new JMenuItem("종료");
+	JMenuItem 			jmi_dbTest 	= new JMenuItem("오라클 연결");
+	AddressDialog2 		aDia 		= new AddressDialog2();
+	static AddressBook2 aBook 		= null;
+	DeptVO 				dVO 		= null;
 	
-	String[] cols = {"부서번호","부서명","지역"};
+	String[] cols = {"부서번호", "부서명", "지역"};
 	String[][] data = new String[0][3];
 	//데이터셋을 담을 수 있는 클래스 생성하기
 	//첫번째 파라미터 데이터영역, 두번째 컬럼 정보 초기화
 	DefaultTableModel dtm_dept = new DefaultTableModel(data, cols);
 	JTable jtb_dept = new JTable(dtm_dept);
 	JScrollPane jsp_dept = new JScrollPane(jtb_dept);
-	
 	
 	//생성자
 	public AddressBook2() {
@@ -83,21 +81,61 @@ public class AddressBook2 implements ActionListener {
 		jf.setVisible(true);
 	}
 	
-	
 	public static void main(String[] args) {
 		aBook = new AddressBook2();
 		aBook.initDisplay();
-		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		
 		if (obj == jmi_sel) {
-			aDia.set("상세조회", dVO, aBook);
-			aDia.setTitle("조회");
-			aDia.setVisible(true);
+			int[] index = jtb_dept.getSelectedRows();
+			
+			if (index.length == 0) {
+				JOptionPane.showMessageDialog(jf, "레코드를 선택해주세요."
+												, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else if (index.length > 1) {
+				JOptionPane.showMessageDialog(jf, "레코드를 하나만 선택해주세요."
+												, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[0], 0).toString());
+				
+				DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql = "SELECT deptno, dname, loc FROM dept"
+							+ " WHERE deptno = ?";
+				try {
+					con = dbMgr.getConnection();
+					pstmt = con.prepareStatement(sql);
+					pstmt.setInt(1, deptno);
+					rs = pstmt.executeQuery();
+					
+					if (rs.next()) {
+						dVO = new DeptVO();
+						dVO.setDeptno(rs.getInt("DEPTNO"));
+						dVO.setDname(rs.getString("DNAME"));
+						dVO.setLoc(rs.getString("LOC"));
+					}
+					else {
+						dVO = new DeptVO();
+					}
+					aDia.set("상세조회", dVO, aBook, false);
+					aDia.setTitle("상세조회");
+					aDia.setVisible(true);
+				} catch (SQLException se){
+					System.out.println(se.getMessage());
+				}////////////////////end of try-catch
+				
+			}///////////////////////end of inner if-else if-else
 		}
+		
 		else if (obj == jmi_selAll) {
 			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 			Connection con = null;
@@ -111,7 +149,7 @@ public class AddressBook2 implements ActionListener {
 				con = dbMgr.getConnection();
 				pstmt = con.prepareStatement(sql);
 				rs = pstmt.executeQuery();
-				DeptVO dVO = null;
+//				DeptVO dVO = null;
 				Vector<DeptVO> vecDVO = new Vector<DeptVO>();
 				
 				while(rs.next()) {
@@ -149,15 +187,63 @@ public class AddressBook2 implements ActionListener {
 		}
 		
 		else if (obj == jmi_ins) {
-			aDia.set("입력", null, aBook);
+			
+			/*
+			 * @param1 제목 바꿔주기, 2는 조회된 결과 dialog에서 재사용해야할 경우 필요
+			 * 3은 dialog에서 입력이 성공하거나 수정 성공하면 부모창 새로고침해야한다고 담당자 요청
+			 * 4는 dialog 화면에서 사용자로부터 입력받는 JTextField들에 대한 상태값 반영  
+			 * 
+			 */
+			aDia.set("입력", null, aBook, true);
 			aDia.setTitle("입력");
-			aDia.setVisible(true);
 		}
 		else if (obj == jmi_upd) {
-			aDia.set("수정", dVO, aBook);
-			aDia.setTitle("수정");
-			aDia.setVisible(true);
 			
+			int[] index = jtb_dept.getSelectedRows();
+			
+			if (index.length == 0) {
+				JOptionPane.showMessageDialog(jf, "수정할 레코드를 선택해주세요."
+												, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else if (index.length > 1) {
+				JOptionPane.showMessageDialog(jf, "수정할 레코드를 하나만 선택해주세요."
+												, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[0], 0).toString());
+				
+				DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				String sql = "SELECT deptno, dname, loc FROM dept"
+							+ " WHERE deptno = ?";
+				try {
+					con = dbMgr.getConnection();
+					pstmt = con.prepareStatement(sql);
+					pstmt.setInt(1, deptno);
+					rs = pstmt.executeQuery();
+					
+					if (rs.next()) {
+						dVO = new DeptVO();
+						dVO.setDeptno(rs.getInt("DEPTNO"));
+						dVO.setDname(rs.getString("DNAME"));
+						dVO.setLoc(rs.getString("LOC"));
+					}
+					else {
+						dVO = new DeptVO();
+					}
+					aDia.set("수정", dVO, aBook, true);
+					aDia.setTitle("수정");
+					aDia.setVisible(true);
+				} catch (SQLException se){
+					System.out.println(se.getMessage());
+				}////////////////////end of try-catch
+				
+			
+			}///////////////////////end of inner if-else if-else
 		}
 		else if (obj == jmi_exit) {
 			System.exit(0);

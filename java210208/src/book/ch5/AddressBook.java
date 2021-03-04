@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 public class AddressBook extends JFrame {
 	//선언부
-	AddressDialog aDia = AddressDialog.getDialog();
 	
 	
 	//생성자

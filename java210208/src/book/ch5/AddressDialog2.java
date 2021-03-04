@@ -17,6 +17,7 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 	JPanel 		jp_center 		= new JPanel();
 	JPanel 		jp_south 		= new JPanel();
 	JScrollPane jsp 			= null;
+	//화면을 처리할 때 해당 옵션을 두 가지로 설정할 수 있음 - getter/setter 형식으로 해보기
 	JLabel 		jlb_deptno 		= new JLabel("부서번호");
 	JTextField 	jtf_deptno	 	= new JTextField();
 	JLabel 		jlb_dname 		= new JLabel("부서이름");
@@ -41,12 +42,69 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 	 * 그 값을 가진 주소번지를 부모창에서 받아 자식창의 이벤트처리 메서드인
 	 * actionPerformed에서 재사용해야 하므로 전역변수로 선언한 다음 지역변수와 초기화하여 사용하도록 한다
 	 */
-	public void set(String title, DeptVO dVO, AddressBook2 aBook) {
-		this.aBook = aBook;
-		this.dVO = dVO;
-		this.setTitle(title);
+	public void set(String title, DeptVO dVO, AddressBook2 aBook, boolean isFlag) {
+		AddressDialog2.aBook = aBook;		//전역변수
+		this.dVO = dVO;			//전역변수
+		this.setTitle(title);	//전역변수일 필요 x
+		//입력모드 | 수정모드 | 상세조회모드
+		this.setEnabled(isFlag);
+		this.setValue(this.dVO);
+	}
+	/*
+	 * set메서드를 통해서 넘어온 4번째 값에 따라서 화면을 처리하는
+	 * 컴포넌트 클래스의 수정 모드에 대한 설정을 바꾸어준다
+	 * 만일 true이면 setEnabled(true)로 설정하고
+	 * 만일 false가 넘어오면 수정할 수 없도록 할 거임
+	 */
+	
+	private void setValue(DeptVO dVO) {
+		//입력을 위한 다이얼로그창 설정, 모든 값을 널로 세팅한다
+		if (dVO == null) {
+			setJtf_deptno("");
+			setJtf_dname("");
+			setJtf_loc("");
+		}
+		else {
+			setJtf_deptno(String.valueOf(dVO.getDeptno()));
+			setJtf_dname(dVO.getDname());
+			setJtf_loc(dVO.getLoc());
+		}
+		
+		//상세조회, 수정 시 오라클에서 조회된 값으로 초기화해야 함 
 	}
 	
+	public void setEnabled(boolean isFlag) {
+		jtf_deptno.setEditable(isFlag);
+		jtf_dname.setEditable(isFlag);
+		jtf_loc.setEditable(isFlag);
+	}
+	///////////////////////[화면처리 get set]/////////////////////////
+	
+	public String getJtf_deptno() {
+		return jtf_deptno.getText();
+	}
+	
+	public void setJtf_deptno(String deptno) {
+		jtf_deptno.setText(deptno);
+	}
+	
+	public String getJtf_dname() {
+		return jtf_dname.getText();
+	}
+	
+	public void setJtf_dname(String dname) {
+		jtf_dname.setText(dname);
+	}
+	
+	public String getJtf_loc() {
+		return jtf_loc.getText();
+	}
+	
+	public void setJtf_loc(String loc) {
+		jtf_loc.setText(loc);
+	}
+	
+	///////////////////////[화면처리 get set]/////////////////////////
 	public AddressDialog2() {
 		initDisplay();
 	}
@@ -83,8 +141,21 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 		if ("처리".equals(command)) {
+			if (dVO == null) {			//입력일 때
+				DeptVO pdVO = new DeptVO();
+				pdVO.setDeptno(Integer.parseInt(getJtf_deptno()));//NumberFormatException 가능성 존재
+				pdVO.setDname(getJtf_dname());
+				pdVO.setLoc(getJtf_loc());
+			} else {					//수정일 때
+				DeptVO pdVO = new DeptVO();
+				pdVO.setDeptno(Integer.parseInt(getJtf_deptno()));
+				pdVO.setDname(getJtf_dname());
+				pdVO.setLoc(getJtf_loc());
+				
+			}
 			aBook.refresh();
 		}
+		
 		if ("닫기".equals(command)) {
 			this.dispose();
 		}
@@ -96,4 +167,12 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 		
 		
 	}
+	
+//	public static void main(String[] args) {
+//		AddressDialog2 aDia = new AddressDialog2();
+//		aDia.set("상세", aDia.dVO, aBook, false);
+//		aDia.initDisplay();
+////		aDia.setTitle("이이잉");
+//		aDia.setVisible(true);
+//	}
 }
