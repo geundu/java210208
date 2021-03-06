@@ -33,9 +33,11 @@ public class AddressBook2 implements ActionListener {
 	JMenuItem 			jmi_del 	= new JMenuItem("삭제");
 	JMenuItem 			jmi_exit 	= new JMenuItem("종료");
 	JMenuItem 			jmi_dbTest 	= new JMenuItem("오라클 연결");
-	AddressDialog2 		aDia 		= new AddressDialog2();
+	static AddressDialog2 		aDia 		= null;
+//	AddressDialog2 		aDia 		= null;
 	static AddressBook2 aBook 		= null;
 	DeptVO 				dVO 		= null;
+	StringBuilder sql_del = new StringBuilder();
 	
 	String[] cols = {"부서번호", "부서명", "지역"};
 	String[][] data = new String[0][3];
@@ -51,8 +53,63 @@ public class AddressBook2 implements ActionListener {
 	}
 	
 	//주소 목록 조회 - 새로고침 처리
+	public Connection reConnect() {
+		DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+		Connection con = dbMgr.getConnection();
+		return con;
+	}
+	
 	public void refresh() {
-		System.out.println("refresh() called successfully");
+		DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		////////////////////////////[조회결과 처리]////////////////////////////////
+//		DeptVO[] dVOS = null;
+		String sql = "SELECT * FROM dept";
+		
+		try {
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+//			DeptVO dVO = null;
+			Vector<DeptVO> vecDVO = new Vector<DeptVO>();
+			
+			while(rs.next()) {
+				dVO = new DeptVO();
+				dVO.setDeptno(rs.getInt("DEPTNO"));
+				dVO.setDname(rs.getString("DNAME"));
+				dVO.setLoc(rs.getString("LOC"));
+				vecDVO.add(dVO);
+			}
+//			dVOS = new DeptVO[vecDVO.size()];
+//			vecDVO.copyInto(dVOS);
+			
+			while(dtm_dept.getRowCount() > 0) {
+				dtm_dept.removeRow(0);
+			}//////////////////////////이미 출력된 레코드 클리어
+			
+			for (int i = 0; i < vecDVO.size(); i++) {
+				Vector<Object> oneRow = new Vector<Object>();
+				oneRow.add(vecDVO.get(i).getDeptno());
+				oneRow.add(vecDVO.get(i).getDname());
+				oneRow.add(vecDVO.get(i).getLoc());
+				dtm_dept.addRow(oneRow);
+				
+//			for (int i = 0; i < dVOS.length; i++) {
+//				Vector oneRow = new Vector();
+//				oneRow.add(dVOS[i].getDeptno());
+//				oneRow.add(dVOS[i].getDname());
+//				oneRow.add(dVOS[i].getLoc());
+//				dtm_dept.addRow(oneRow);
+				
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (con != null) con.close();
+			}
+		} catch (SQLException se) {
+			System.out.println(se.getMessage());
+		}
 	}
 	
 	//화면처리부
@@ -87,9 +144,11 @@ public class AddressBook2 implements ActionListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
 		
-		if (obj == jmi_sel) {
+		Object obj = e.getSource();
+		aDia = AddressDialog2.getDiaLogInstance();
+		
+		if (obj == jmi_sel) {		//상세조회 메뉴
 			int[] index = jtb_dept.getSelectedRows();
 			
 			if (index.length == 0) {
@@ -136,68 +195,23 @@ public class AddressBook2 implements ActionListener {
 			}///////////////////////end of inner if-else if-else
 		}
 		
-		else if (obj == jmi_selAll) {
-			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
-			Connection con = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			////////////////////////////[조회결과 처리]////////////////////////////////
-//			DeptVO[] dVOS = null;
-			String sql = "SELECT * FROM dept";
-			
-			try {
-				con = dbMgr.getConnection();
-				pstmt = con.prepareStatement(sql);
-				rs = pstmt.executeQuery();
-//				DeptVO dVO = null;
-				Vector<DeptVO> vecDVO = new Vector<DeptVO>();
-				
-				while(rs.next()) {
-					dVO = new DeptVO();
-					dVO.setDeptno(rs.getInt("DEPTNO"));
-					dVO.setDname(rs.getString("DNAME"));
-					dVO.setLoc(rs.getString("LOC"));
-					vecDVO.add(dVO);
-				}
-//				dVOS = new DeptVO[vecDVO.size()];
-//				vecDVO.copyInto(dVOS);
-				
-				while(dtm_dept.getRowCount() > 0) {
-					dtm_dept.removeRow(0);
-				}//////////////////////////이미 출력된 레코드 클리어
-				
-				for (int i = 0; i < vecDVO.size(); i++) {
-					Vector<Object> oneRow = new Vector<Object>();
-					oneRow.add(vecDVO.get(i).getDeptno());
-					oneRow.add(vecDVO.get(i).getDname());
-					oneRow.add(vecDVO.get(i).getLoc());
-					dtm_dept.addRow(oneRow);
-					
-//				for (int i = 0; i < dVOS.length; i++) {
-//					Vector oneRow = new Vector();
-//					oneRow.add(dVOS[i].getDeptno());
-//					oneRow.add(dVOS[i].getDname());
-//					oneRow.add(dVOS[i].getLoc());
-//					dtm_dept.addRow(oneRow);
-				}
-			} catch (SQLException se) {
-				System.out.println(se.getMessage());
-			}
-			////////////////////////////[조회결과 처리]////////////////////////////////
+		else if (obj == jmi_selAll) {		//전체조회 메뉴
+			refresh();
 		}
 		
-		else if (obj == jmi_ins) {
+		else if (obj == jmi_ins) {		//입력 메뉴
 			
 			/*
 			 * @param1 제목 바꿔주기, 2는 조회된 결과 dialog에서 재사용해야할 경우 필요
 			 * 3은 dialog에서 입력이 성공하거나 수정 성공하면 부모창 새로고침해야한다고 담당자 요청
 			 * 4는 dialog 화면에서 사용자로부터 입력받는 JTextField들에 대한 상태값 반영  
-			 * 
 			 */
 			aDia.set("입력", null, aBook, true);
 			aDia.setTitle("입력");
+			aDia.setVisible(true);
 		}
-		else if (obj == jmi_upd) {
+		else if (obj == jmi_upd) {		//수정 메뉴
+			
 			
 			int[] index = jtb_dept.getSelectedRows();
 			
@@ -235,9 +249,9 @@ public class AddressBook2 implements ActionListener {
 					else {
 						dVO = new DeptVO();
 					}
-					aDia.set("수정", dVO, aBook, true);
 					aDia.setTitle("수정");
 					aDia.setVisible(true);
+					aDia.set("수정", dVO, aBook, true);
 				} catch (SQLException se){
 					System.out.println(se.getMessage());
 				}////////////////////end of try-catch
@@ -245,10 +259,10 @@ public class AddressBook2 implements ActionListener {
 			
 			}///////////////////////end of inner if-else if-else
 		}
-		else if (obj == jmi_exit) {
+		else if (obj == jmi_exit) {		//종료 메뉴
 			System.exit(0);
 		}
-		else if (obj == jmi_dbTest) {
+		else if (obj == jmi_dbTest) {		//오라클 연결 메뉴
 			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
 			Connection con = dbMgr.getConnection();
 			if (con != null) {
@@ -258,7 +272,39 @@ public class AddressBook2 implements ActionListener {
 				JOptionPane.showMessageDialog(jf, "서버 연결 실패");
 		}
 		else {
-			//삭제
+			int[] index = jtb_dept.getSelectedRows();
+			Vector<Integer> deptVec = new Vector<Integer>();
+			
+			for (int i = 0; i < index.length; i++) {
+				Integer deptno = Integer.parseInt(dtm_dept.getValueAt(index[i], 0).toString());
+				deptVec.add(deptno);
+			}
+			
+			DBConnectionMgr dbMgr = DBConnectionMgr.getInstance();
+			Connection con = null;
+			PreparedStatement delpstmt = null;
+			sql_del.append("DELETE FROM dept WHERE deptno IN (");
+			for (int j = 0; j < deptVec.size(); j++) {
+				sql_del.append(deptVec.get(j));
+				if (j < deptVec.size() - 1)
+					sql_del.append(", ");
+			}
+			sql_del.append(")");
+			
+			try {
+				con = dbMgr.getConnection();
+				delpstmt = con.prepareStatement(sql_del.toString());
+				int delResult = delpstmt.executeUpdate();
+				sql_del.setLength(0);
+				
+				if(delResult == 1) {
+					JOptionPane.showMessageDialog(aBook.jf, "삭제되었습니다.");
+				}
+				dbMgr.freeConnection(con, delpstmt);
+				
+			} catch (SQLException se){
+				System.out.println(se.getMessage());
+			}////////////////////end of try-catch
 		}
 	}////////////////////end of actionPerformed
 }

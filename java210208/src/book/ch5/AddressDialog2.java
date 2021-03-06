@@ -2,18 +2,38 @@ package book.ch5;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import com.quiz0222.DeptVO;
+import com.util.DBConnectionMgr;
 
 public class AddressDialog2 extends JDialog implements ActionListener{
 	
+	static DBConnectionMgr dbMgr = null;
+	Connection con = null;
+	PreparedStatement ipstmt = null;
+	PreparedStatement upstmt = null;
+//	ResultSet rs = null;
+	
+	/*
+	 * INSERT INTO dept(deptno, dname, loc)
+		VALUES(51, '자택경비 둘', '집 둘')
+	 * 
+	 * 
+	 */
+	StringBuilder sql_ins = new StringBuilder();
+	//스트링빌더 좋음, 스트링은 원본 안바껴서 +할때마다 객체 추가된다 = 메모리 질질샌다
+//	StringBuffer sql_ins2 = new StringBuffer();	//멀티스레드에 안전 속도 비교적 느림
+	StringBuilder sql_upd = new StringBuilder();//싱글스레드에 안전 속도 비교적 빠름
 	JPanel 		jp_center 		= new JPanel();
 	JPanel 		jp_south 		= new JPanel();
 	JScrollPane jsp 			= null;
@@ -28,6 +48,7 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 	JButton 	jb_close 		= new JButton("닫기");
 	DeptVO 		dVO 			= null;
 	static AddressBook2 aBook 	= null;
+	static AddressDialog2 aDia 	= null;
 	
 	
 	/*
@@ -43,7 +64,7 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 	 * actionPerformed에서 재사용해야 하므로 전역변수로 선언한 다음 지역변수와 초기화하여 사용하도록 한다
 	 */
 	public void set(String title, DeptVO dVO, AddressBook2 aBook, boolean isFlag) {
-		AddressDialog2.aBook = aBook;		//전역변수
+		this.aBook = aBook;		//전역변수
 		this.dVO = dVO;			//전역변수
 		this.setTitle(title);	//전역변수일 필요 x
 		//입력모드 | 수정모드 | 상세조회모드
@@ -103,11 +124,35 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 	public void setJtf_loc(String loc) {
 		jtf_loc.setText(loc);
 	}
-	
 	///////////////////////[화면처리 get set]/////////////////////////
-	public AddressDialog2() {
+	
+//	public AddressDialog2() {
+//		try {
+//			dbMgr = DBConnectionMgr.getInstance();
+//			con = dbMgr.getConnection();
+//			con.setAutoCommit(false);
+//		} catch (Exception e) {
+//			System.out.println(e.toString());
+//		}
+//		initDisplay();
+//	}
+	private AddressDialog2() {
+		try {
+			dbMgr = DBConnectionMgr.getInstance();
+			con = dbMgr.getConnection();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
 		initDisplay();
 	}
+	
+	public static AddressDialog2 getDiaLogInstance() {
+		if (aDia == null) {
+			aDia = new AddressDialog2();
+		}
+		return aDia;
+	}
+	
 	public void initDisplay() {
 		this.setSize(400, 500);
 		this.setVisible(false);
@@ -139,21 +184,70 @@ public class AddressDialog2 extends JDialog implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		String command = e.getActionCommand();
+		con = aBook.reConnect();
+		
+		
 		if ("처리".equals(command)) {
+			ipstmt = null;
 			if (dVO == null) {			//입력일 때
 				DeptVO pdVO = new DeptVO();
+				
+				//Dialog에서 사용자가 텍스트필드에 입력한 값 전달 
 				pdVO.setDeptno(Integer.parseInt(getJtf_deptno()));//NumberFormatException 가능성 존재
 				pdVO.setDname(getJtf_dname());
 				pdVO.setLoc(getJtf_loc());
+				
+				sql_ins.append("INSERT INTO dept(deptno, dname, loc)"
+						+ " VALUES(?, ?, ?)");
+				try {
+					ipstmt = con.prepareStatement(sql_ins.toString());
+					int i = 0;
+					ipstmt.setInt(++i, pdVO.getDeptno());
+					ipstmt.setString(++i, pdVO.getDname());
+					ipstmt.setString(++i, pdVO.getLoc());
+					int iResult = ipstmt.executeUpdate();
+					sql_ins.setLength(0);
+					
+					if(iResult == 1) {
+						JOptionPane.showMessageDialog(aBook.jf, "등록하였습니다.");
+					}
+					
+					dbMgr.freeConnection(con, ipstmt);
+					
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(aBook.jf, "Exception : " + e2.toString());
+					e2.printStackTrace();
+				}
 			} else {					//수정일 때
 				DeptVO pdVO = new DeptVO();
 				pdVO.setDeptno(Integer.parseInt(getJtf_deptno()));
 				pdVO.setDname(getJtf_dname());
 				pdVO.setLoc(getJtf_loc());
+				sql_upd.append("UPDATE dept SET loc = ? WHERE deptno = ?");
 				
-			}
+				try {
+					upstmt = con.prepareStatement(sql_upd.toString());
+					
+					int i = 0;
+					upstmt.setString(++i, pdVO.getLoc());
+					upstmt.setInt(++i, pdVO.getDeptno());
+					int uResult = upstmt.executeUpdate();
+					sql_upd.setLength(0);
+					
+					if(uResult == 1) {
+						JOptionPane.showMessageDialog(aBook.jf, "수정하였습니다.");
+					}
+					dbMgr.freeConnection(con, upstmt);
+					
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(aBook.jf, "Exception : " + e2.toString());
+					e2.printStackTrace();
+				}
+			}//////////////////////////////처리 버튼 액션
 			aBook.refresh();
+			this.dispose();
 		}
 		
 		if ("닫기".equals(command)) {

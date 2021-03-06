@@ -12,21 +12,29 @@ public class DBConnectionMgr {
 	private final static String _URL = "jdbc:oracle:thin:@121.139.85.156:15210:orcl11";
 	private final static String _USER = "SCOTT";
 	private final static String _PW = "tiger";
-	static DBConnectionMgr dbMgr = null;
+	private static DBConnectionMgr dbMgr = null;
+	
+	private DBConnectionMgr() {
+		//Lazy Initialization - 선언과 생성이 따로 쓰일 때
+	}
 	
 	Connection con = null;
 	
 	public static DBConnectionMgr getInstance() {
-		DBConnectionMgr dbMgr = null;
 		if(dbMgr == null) {
 			dbMgr = new DBConnectionMgr();
 		}
 		return dbMgr;
 	}
+	
 	public Connection getConnection() {
 		try {
 			Class.forName(_DRIVER);
 			con = DriverManager.getConnection(_URL, _USER, _PW);
+//			con.setAutoCommit(false);
+//			con.setAutoCommit(true);
+//			con.commit();
+//			con.rollback();
 			
 		} catch (ClassNotFoundException e) {
 			System.out.println(e.getMessage());
