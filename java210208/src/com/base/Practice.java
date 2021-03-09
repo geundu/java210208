@@ -4,6 +4,15 @@ package com.base;
 public class Practice  {
 	public static void main(String[] args) {
 		
+		
+		String msg = "hello world man!";
+		String[] split = msg.split(" ");
+		
+		
+		for(String s : split) {
+			System.out.println(s);
+		}
+		
 //		Scanner sc = new Scanner(System.in);
 //		
 //		int x = Integer.parseUnsignedInt(sc.next());

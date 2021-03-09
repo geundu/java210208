@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -20,11 +21,16 @@ import javax.swing.table.DefaultTableModel;
 import com.quiz0222.DeptVO;
 import com.util.DBConnectionMgr;
 
+import network.step1.TimeClient;
+import network.step1.TimeServer;
+
 public class AddressBook2 implements ActionListener {
 	//선언부
 	JFrame 				jf 			= null;
+	JLabel jlb_time = new JLabel();
+	Thread th = new TimeClient(jlb_time);
 	JMenuBar 			jmb 		= new JMenuBar();
-	JMenu 				jm_file 	= new JMenu("FILE");
+	JMenu 				jm_file 	= new JMenu("FILE (F)");
 	JMenu 				jm_oracle 	= new JMenu("DB 연동");
 	JMenuItem 			jmi_sel 	= new JMenuItem("상세조회");
 	JMenuItem 			jmi_selAll 	= new JMenuItem("전체조회");
@@ -117,6 +123,7 @@ public class AddressBook2 implements ActionListener {
 		jf = new JFrame();
 		jmb.add(jm_file);
 		jmb.add(jm_oracle);
+		jm_file.setMnemonic('F');
 		jm_file.add(jmi_sel);
 		jm_file.add(jmi_selAll);
 		jm_file.add(jmi_ins);
@@ -126,6 +133,8 @@ public class AddressBook2 implements ActionListener {
 		jm_oracle.add(jmi_dbTest);
 		jf.setJMenuBar(jmb);
 		jf.add(jsp_dept);
+		jlb_time.setHorizontalAlignment(JLabel.CENTER);
+		jf.add("South", jlb_time);
 		jmi_sel.addActionListener(this);
 		jmi_ins.addActionListener(this);
 		jmi_upd.addActionListener(this);
@@ -133,6 +142,7 @@ public class AddressBook2 implements ActionListener {
 		jmi_dbTest.addActionListener(this);
 		jmi_exit.addActionListener(this);
 		jmi_selAll.addActionListener(this);
+		th.start();
 		jf.setTitle("주소록 ver1.0");
 		jf.setSize(500, 400);
 		jf.setVisible(true);
