@@ -32,8 +32,8 @@ public class AddressBook2 implements ActionListener {
 	JMenuBar 			jmb 		= new JMenuBar();
 	JMenu 				jm_file 	= new JMenu("FILE (F)");
 	JMenu 				jm_oracle 	= new JMenu("DB 연동");
-	JMenuItem 			jmi_sel 	= new JMenuItem("상세조회");
 	JMenuItem 			jmi_selAll 	= new JMenuItem("전체조회");
+	JMenuItem 			jmi_sel 	= new JMenuItem("상세조회");
 	JMenuItem 			jmi_ins 	= new JMenuItem("입력");
 	JMenuItem 			jmi_upd 	= new JMenuItem("수정");
 	JMenuItem 			jmi_del 	= new JMenuItem("삭제");
@@ -124,8 +124,8 @@ public class AddressBook2 implements ActionListener {
 		jmb.add(jm_file);
 		jmb.add(jm_oracle);
 		jm_file.setMnemonic('F');
-		jm_file.add(jmi_sel);
 		jm_file.add(jmi_selAll);
+		jm_file.add(jmi_sel);
 		jm_file.add(jmi_ins);
 		jm_file.add(jmi_upd);
 		jm_file.add(jmi_del);

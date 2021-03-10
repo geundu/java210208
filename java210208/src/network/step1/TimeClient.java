@@ -52,13 +52,11 @@ public class TimeClient extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
-//
+
 //	public static void main(String[] args) {
 //		JLabel jlb_time = null;
 //		TimeClient tc = new TimeClient(jlb_time);
 //		tc.start();
 //	}
-
 }
