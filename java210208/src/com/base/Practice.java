@@ -1,17 +1,25 @@
 package com.base;
 
+import java.util.Scanner;
 
 public class Practice  {
 	public static void main(String[] args) {
 		
 		
-		String msg = "hello world man!";
-		String[] split = msg.split(" ");
+		Scanner scan = new Scanner(System.in);
 		
+		String str = "";
 		
-		for(String s : split) {
-			System.out.println(s);
+		str = scan.nextLine();
+		System.out.println(str);
+		
+		if (str == "입력") {
+			System.out.println("if문 들어왔음");
 		}
+		else
+			System.out.println("해당되지 않음");
+		
+		
 		
 //		Scanner sc = new Scanner(System.in);
 //		

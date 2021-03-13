@@ -10,7 +10,7 @@ public class DBConnectionMgr {
 	
 	private final static String _DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private final static String _URL = "jdbc:oracle:thin:@121.139.85.156:15210:orcl11";
-	private final static String _USER = "SCOTT";
+	private final static String _USER = "GEUNDU";
 	private final static String _PW = "tiger";
 	private static DBConnectionMgr dbMgr = null;
 	
