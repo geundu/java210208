@@ -33,6 +33,7 @@ public class TalkServerThread extends Thread {
 			nickname = st.nextToken();
 			ts.jta_log.append(nickname + "님이 입장하였습니다.\n");
 			//////////////////////// 오늘의 어려운 부분 시작//////////////////////////
+
 			for (TalkServerThread tst : ts.globalList) {
 				this.send(100 + "#" + tst.nickname);
 			}
@@ -47,6 +48,12 @@ public class TalkServerThread extends Thread {
 		}
 	}
 
+	public void broadCasting(String msg) {
+		for (TalkServerThread tst : ts.globalList) {
+			tst.send(msg);
+		}
+	}
+
 	public void send(String msg) {
 		try {
 			oos.writeObject(msg);
@@ -55,11 +62,6 @@ public class TalkServerThread extends Thread {
 		}
 	}
 
-	public void broadCasting(String msg) {
-		for (TalkServerThread tst : ts.globalList) {
-			tst.send(msg);
-		}
-	}
 
 
 	@Override

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -37,7 +38,6 @@ public class TalkServer extends JFrame implements Runnable {
 		this.add("Center", jsp_log);
 		this.setSize(500, 500);
 		this.setVisible(true);
-
 	}
 
 	@Override

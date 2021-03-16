@@ -5,10 +5,15 @@ import java.util.StringTokenizer;
 public class TalkClientThread extends Thread {
 
 	TalkClient tc = null;
+	TalkClientVer2 tc2 = null;
 
 	// 들어야 하는데 TalkClient에 ObjectInputStream가 있어서 생성자를 통해 불러옴
 	public TalkClientThread(TalkClient tc) {
 		this.tc = tc;
+	}
+	
+	public TalkClientThread(TalkClientVer2 tc2) {
+		this.tc2 = tc2;
 	}
 
 	@Override
