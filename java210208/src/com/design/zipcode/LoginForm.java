@@ -2,7 +2,6 @@ package com.design.zipcode;
 
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -14,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import common.jdbc.MemberDAO;
+
 public class LoginForm extends JFrame implements ActionListener {
 	String imgPath = "src\\";
 	ImageIcon ig = new ImageIcon(imgPath + "main.png");
@@ -21,14 +22,15 @@ public class LoginForm extends JFrame implements ActionListener {
 	JTextField jtf_id = new JTextField("");
 	JLabel jlb_pw = new JLabel("비밀번호");
 	JPasswordField jtf_pw = new JPasswordField("");
-	Font font = new Font("휴먼매직체", Font.BOLD, 17);
+	Font font = new Font("맑은 고딕", Font.BOLD, 15);
 	JButton jbtn_login = new JButton(new ImageIcon(imgPath + "login.png"));
 	JButton jbtn_join = new JButton(new ImageIcon(imgPath + "confirm.png"));
 //	TalkDao tDao = new TalkDao();
-	String nickName = null;// 닉네임 등록
+	public String nickName = null;// 닉네임 등록
+	public boolean isActivate = true;
 
-	LoginForm() {
-
+	public LoginForm() {
+		initDisplay();
 	}
 
 	// 내부 클래스로 배경 이미지 처리
@@ -64,16 +66,45 @@ public class LoginForm extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
-	public static void main(String[] args) {
-		LoginForm login = new LoginForm();
-		login.initDisplay();
-	}
+//	public static void main(String[] args) {
+//		LoginForm login = new LoginForm();
+//		login.initDisplay();
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
+		MemberDAO md = new MemberDAO();
 		if (jbtn_login == obj) {
-		}
+			if ("".equals(jtf_id.getText()) || "".equals(jtf_pw.getText())) {
+				JOptionPane.showMessageDialog(this, "아이디와 비밀번호를 확인하세요.");
+				return;
+			}
+			try {
+				String mem_id = jtf_id.getText();
+				String mem_pw = jtf_pw.getText();
+				String msg = md.login(mem_id, mem_pw);
 
+				if ("아이디가 존재하지 않습니다.".equals(msg)) {
+					JOptionPane.showMessageDialog(this, "아이디를 확인하세요.");
+					jtf_id.setText("");
+					jtf_pw.setText("");
+					return;
+				} else if ("비밀번호가 틀립니다.".equals(msg)) {
+					JOptionPane.showMessageDialog(this, "비밀번호를 확인하세요.");
+					jtf_id.setText("");
+					jtf_pw.setText("");
+					return;
+				} else {
+					nickName = msg;
+					isActivate = false;
+					JOptionPane.showMessageDialog(this, "로그인 성공", "info", JOptionPane.INFORMATION_MESSAGE);
+					this.setVisible(false);
+				}
+
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 }

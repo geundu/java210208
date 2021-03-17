@@ -1,46 +1,34 @@
 package com.base;
 
-import java.util.Scanner;
+class ExtendsTest {
+	public ExtendsTest() {
+		System.out.println("수퍼클래스 생성자 호출");
+	}
 
-public class Practice  {
+	public ExtendsTest(int x) {
+		System.out.println("매개변수 있는 수퍼클래스 생성자 호출");
+	}
+
+	public void superMethod() {
+		System.out.println("수퍼클래스가 선언한 메서드");
+	}
+}
+
+public class Practice extends ExtendsTest {
+
+	Practice() {
+//		super(10);
+		System.out.println("서브클래스 생성자 호출");
+	}
+
+//	@Override
+	public void superMethod() {
+		System.out.println("서브클래스에 의해 오버라이드된 메서드");
+	}
+
 	public static void main(String[] args) {
-		
-		
-		Scanner scan = new Scanner(System.in);
-		
-		String str = "";
-		
-		str = scan.nextLine();
-		System.out.println(str);
-		
-		if (str == "입력") {
-			System.out.println("if문 들어왔음");
-		}
-		else
-			System.out.println("해당되지 않음");
-		
-		
-		
-//		Scanner sc = new Scanner(System.in);
-//		
-//		int x = Integer.parseUnsignedInt(sc.next());
-//		System.out.println(x);
-//		
-//		
-//		System.out.print("정수를 입력하시오 : ");
-//		int bound = sc.nextInt();
-//		
-//		for (int i = 0; i < bound; i++) {
-//			for (int j = 0; j < bound; j++) {
-//				if (j < i) {
-//					System.out.print(" ");
-//				}
-//				else {
-//					System.out.print("*");
-//				}
-//			}/////////////////end of j for
-//			System.out.println();
-//		}/////////////////////end of i for
-//		sc.close();
+		ExtendsTest prac = new Practice();
+
+		prac.superMethod();
 	}
 }

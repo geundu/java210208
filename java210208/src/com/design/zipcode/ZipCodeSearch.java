@@ -12,13 +12,10 @@ import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -26,36 +23,38 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import com.util.DBConnectionMgr;
-import com.design.zipcode.MemberShip;
-import com.design.zipcode.ZipCodeVO;
 
 /*
  * dispose에 대한 설명임
  * 이 Window, 하위 구성 요소 및 모든 소유 된 하위 구성 요소에서 사용하는 모든 기본 화면 리소스를
  * 해제합니다. 즉, 이러한 구성 요소에 대한 리소스가 파괴되고 사용하는 모든 메모리가 OS로 반환되며
  * 표시 할 수없는 것으로 표시됩니다.
-Window 및 하위 구성 요소는 pack 또는 show에 대한 후속 호출로 네이티브 리소스를 다시 빌드하여
-다시 표시 가능하게 만들 수 있습니다. 다시 생성 된 Window 및 해당 하위 구성 요소의 상태는 Window가
-삭제 된 시점에서 이러한 개체의 상태와 동일합니다 (해당 작업 간의 추가 수정은 고려하지 않음).
+ * Window 및 하위 구성 요소는 pack 또는 show에 대한 후속 호출로 네이티브 리소스를 다시 빌드하여
+ * 다시 표시 가능하게 만들 수 있습니다. 다시 생성 된 Window 및 해당 하위 구성 요소의 상태는 Window가
+ * 삭제 된 시점에서 이러한 개체의 상태와 동일합니다 (해당 작업 간의 추가 수정은 고려하지 않음).
  *
  * setVisiable에 대한 설명임.
  * 재정의 : 구성 요소의 setVisible (...)
-매개 변수 : b true이면 Window를 표시하고 그렇지 않으면 Window를 숨 깁니다.
-Window 및 / 또는 해당 소유자가 아직 표시 가능하지 않은 경우 둘 다 표시 가능하게됩니다.
-창은 보이기 전에 유효성이 검사되며 창이 이미 보이는 경우에는 창을 앞으로 가져옵니다.
-false이면이 Window, 하위 구성 요소 및 모든 소유 자식을 숨 깁니다. Window 및 해당 하위 구성
-요소는 #setVisible (true)를 호출하여 다시 표시 할 수 있습니다.
+ * 매개 변수 : b true이면 Window를 표시하고 그렇지 않으면 Window를 숨 깁니다.
+ * Window 및 / 또는 해당 소유자가 아직 표시 가능하지 않은 경우 둘 다 표시 가능하게됩니다.
+ * 창은 보이기 전에 유효성이 검사되며 창이 이미 보이는 경우에는 창을 앞으로 가져옵니다.
+ * false이면이 Window, 하위 구성 요소 및 모든 소유 자식을 숨 깁니다. Window 및 해당 하위 구성
+ * 요소는 #setVisible (true)를 호출하여 다시 표시 할 수 있습니다.
  */
 public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener, FocusListener, ActionListener {
 	// 선언부
 	String zdo = null;
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	DBConnectionMgr dbMgr = null;
 
 	JPanel jp_north = new JPanel();
 	// insert here
 	String zdos[] = { "전체", "서울", "경기", "강원" };
 	String zdos2[] = { "전체", "부산", "전남", "대구" };
 	Vector<String> vzdos = new Vector<>();// vzdos.size()==>0
-	JComboBox<String> jcb_zdo = new JComboBox<>(zdos);// West
+	JComboBox<String> jcb_zdo = null;
 	JComboBox<String> jcb_zdo2 = null;// West
 	JTextField jtf_search = new JTextField("동이름을 입력하세요.");// Center
 	JButton jbtn_search = new JButton("조회");// East
@@ -72,13 +71,14 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 
 	// 생성자
 	public ZipCodeSearch() {
-		zdos3 = zcDAO.getZdoList();
+		zdos3 = getZDOList();
+		jcb_zdo = new JComboBox<>(zdos3);
 	}
 
-	public ZipCodeSearch(MemberShip memberShip) {
-		this();
-		this.memberShip = memberShip;
-	}
+//	public ZipCodeSearch(MemberShip memberShip) {
+//		this();
+//		this.memberShip = memberShip;
+//	}
 
 	// 화면처리부
 	public void initDisplay() {
@@ -110,13 +110,50 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 		jp_north.add("East", jbtn_search);
 		this.add("North", jp_north);
 		this.add("Center", jsp_zipcode);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("우편번호 검색");
 		this.setSize(430, 400);
 		this.setVisible(true);
 	}
 
+	public String[] getZDOList() {
+		String[] zdos = null;
+		// 오라클 서버에 보낼 SELECT문 작성
+		// String 자체는 원본이 바뀌지 않는 특성을 가진다.
+		// StringBuilder는 단일 스레스에서 안전하고,
+		// StringBuffer는 다중 스레드에서 안전하다.
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("SELECT '전체' zdo FROM dual UNION ALL SELECT zdo FROM"
+				+ "(SELECT DISTINCT(zdo) zdo FROM zipcode_t ORDER BY zdo)");
+
+		try {
+			dbMgr = DBConnectionMgr.getInstance();
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sb.toString());
+			rs = pstmt.executeQuery();
+			Vector<String> v = new Vector<String>();
+//			List<String> v2 = new Vector<String>();
+			while (rs.next()) {
+				String zdo = rs.getString("zdo");
+				v.add(zdo);
+			}
+			zdos = new String[v.size()];
+			v.copyInto(zdos);
+			// 리스트 타입으로 선언해서 벡터로 인스턴스화 한다고 해서 copyInto 쓸 수가 없다
+//			v2.copyInto(zdos);
+
+			dbMgr.freeConnection(con, pstmt, rs);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return zdos;
+	}
+
 	// 메인메소드
 	public static void main(String[] args) {
+		JFrame.setDefaultLookAndFeelDecorated(true);
 		ZipCodeSearch zcs = new ZipCodeSearch();
 		zcs.initDisplay();
 	}
@@ -132,16 +169,51 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		
-	}
 
+	}
 
 	public void refreshData(String zdo, String dong) {
 		System.out.println("zdo:" + zdo + ", dong:" + dong);
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT address, zipcode FROM zipcode_t WHERE 1 = 1");
+		if (zdo != null && zdo.length() > 0) {
+			sql.append(" AND zdo = ?");
+		}
+		if (dong != null && dong.length() > 0) {
+			sql.append(" AND dong LIKE '%'||?||'%'");
+		}
+
+		int i = 1;
+
 		try {
+			dbMgr = DBConnectionMgr.getInstance();
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sql.toString());
+			if (zdo != null && zdo.length() > 0) {
+				pstmt.setString(i++, zdo);
+			}
+			if (dong != null && dong.length() > 0) {
+				pstmt.setString(i++, dong);
+			}
+			rs = pstmt.executeQuery();
+			Vector<ZipCodeVO> v = new Vector<>();
+			ZipCodeVO[] zVOS = null;
+			ZipCodeVO zVO = null;
+			while (rs.next()) {
+				zVO = new ZipCodeVO();
+				zVO.setAddress(rs.getString("address"));
+				zVO.setZipcode(rs.getInt("zipcode"));
+				v.add(zVO);
+			}
+			zVOS = new ZipCodeVO[v.size()];
+			v.copyInto(zVOS);
+
+			dbMgr.freeConnection(con, pstmt, rs);
 
 		} catch (Exception e) {
-			System.out.println(e.toString());
+			e.printStackTrace();
+		} finally {
+
 		}
 	}
 
