@@ -70,9 +70,23 @@ public class DBConnectionMgr {
 			e.printStackTrace();
 		}
 	}
+
 	// PROCEDURE 반납
 	public void freeConnection(Connection con, CallableStatement cstmt) {
 		try {
+			if (cstmt != null)
+				cstmt.close();
+			if (con != null)
+				con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void freeConnection(Connection con, CallableStatement cstmt, ResultSet rs) {
+		try {
+			if (rs != null)
+				rs.close();
 			if (cstmt != null)
 				cstmt.close();
 			if (con != null)
