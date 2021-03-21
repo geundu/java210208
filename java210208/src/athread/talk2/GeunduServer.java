@@ -1,64 +1,95 @@
 package athread.talk2;
 
 import java.awt.Color;
-import java.io.IOException;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
-/*
- * 클라이언트에서 접속 시도가 있을 때 서버에서
- * 클라이언트의 로그 정보를 보고 싶다.
- * 따라서 화면에 전광판을 하나 추가하여
- * 텍스트로 로그 정보를 확인할 수 있도록 하기 위해서
- * JFrame을 상속받았다.
- * main() 메서드가 있는 클래스는 디폴트 스레드를 가진다.
- * 이 스레드에서 소켓서버 정보를 관리하는 중 경합이 일어날 수 있고
- * 그에 따라 충돌이나 이상이 발생할 수 있으므로
- * 별도의 스레드를 구현하고 그 스레드의 run() 메소드 안에서
- * 안전하게 소켓들을 생성하고 관리할 수 있도록 한다.
- */
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class GeunduServer extends JFrame implements Runnable {
-
-	ServerSocket server = null;
-	Socket client = null;
 	GeunduServerThread tst = null;
-	Vector<GeunduServerThread> globalList = null;
-	JTextArea jta_log = new JTextArea();
-	JScrollPane jsp_log = new JScrollPane(jta_log);
+	List<GeunduServerThread> globalList = null;
+	ServerSocket server = null;
+	Socket socket = null;
+	JTextArea jta_log = new JTextArea(10, 30);
+	JScrollPane jsp_log = new JScrollPane(jta_log, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	JPanel jp_north = new JPanel();
+	JButton jbtn_log = new JButton("로그저장");
+	String logPath = "src\\athread\\talk2\\";
 
 	public void initDisplay() {
-		System.out.println("initDisplay() called successfully.");
-		jta_log.setBackground(Color.ORANGE);
+		jbtn_log.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object obj = e.getSource();
+				if (obj == jbtn_log) {
+					String fileName = "log_" + setTimer() + ".txt";
+					System.out.println(fileName);//log_2020-03-13.txt
+					try {
+						//자바는 모든 기능 사물 들을 클래스로 설계하도록 유도한다.
+						//파일명을 클래스로 만들어주는 API가 있다. -File
+						File f = new File(logPath + fileName);
+						//파일명만 생성될 뿐 내용까지 만들어주지는 않는다.
+						//내용부분을 담는 별도의 클래스가 필요하다.
+						PrintWriter pw = new PrintWriter(new BufferedWriter(//필터클래스-카메라 필터
+								new FileWriter(f.getAbsolutePath())));
+						//io패키지에는 단독으로 파일을 컨트롤할 수 있는 클래스가 있고
+						//그 클래스에 연결해서 사용하는 필터 클래스가 존재함.(기능을 향상해줌)	
+						pw.write(jta_log.getText());
+						pw.close();//사용한 입출력 클래스는 반드시 닫아줌.
+					} catch (Exception e2) {
+						//예외가 발생했을 때 출력함.
+						//예외가 발생하지 않으면 실행이 안됨.
+						System.out.println(e2.toString());
+					}
+				}
+			}
+		});
+		Font font = new Font("맑은 고딕", Font.PLAIN, 20);
+		jp_north.setLayout(new FlowLayout(FlowLayout.LEFT));
+		jta_log.setFont(font);
+		jta_log.setBackground(Color.orange);
+		jp_north.add(jbtn_log);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.add("North", jp_north);
 		this.add("Center", jsp_log);
-		this.setSize(500, 500);
+		this.setSize(500, 400);
 		this.setVisible(true);
+
 	}
 
+	//서버소켓과 클라이언트측 소켓을 연결하기
 	@Override
 	public void run() {
-		System.out.println("TalkServer run() called successfully.");
-		globalList = new Vector<GeunduServerThread>();
-
-		boolean isFlag = false;
-
+		//서버에 접속해온 클라이언트 스레드 정보를 관리할 벡터 생성하기 
+		globalList = new Vector<>();
+		boolean isStop = false;
 		try {
 			server = new ServerSocket(9234);
-			jta_log.append("Server Ready...\n");
-
-			while (!isFlag) {
-				client = server.accept();
-				jta_log.append("Client info : " + client + "\n");
-				tst = new GeunduServerThread(this);
+			jta_log.append("Server Ready.........\n");
+			while (!isStop) {
+				socket = server.accept();
+				jta_log.append("client info:" + socket + "\n");
+				GeunduServerThread tst = new GeunduServerThread(this);
 				tst.start();
 			}
-
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -67,6 +98,19 @@ public class GeunduServer extends JFrame implements Runnable {
 		GeunduServer ts = new GeunduServer();
 		ts.initDisplay();
 		Thread th = new Thread(ts);
-		th.start();// run() 메서드가 호출된다.
+		th.start();
 	}
+
+	/*******************************************************
+	 * 시스템의 오늘 날짜 정보 가져오기
+	 * @param 해당사항 없음.
+	 * @return 2020-03-13
+	 ******************************************************/
+	public String setTimer() {
+		Calendar cal = Calendar.getInstance();
+		int yyyy = cal.get(Calendar.YEAR);
+		int mm = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		return yyyy + "-" + (mm < 10 ? "0" + mm : "" + mm) + "-" + (day < 10 ? "0" + day : "" + day);
+	}////////////////end of setTimer
 }
