@@ -35,7 +35,7 @@ import com.util.DBConnectionMgr;
  *
  * setVisiable에 대한 설명임.
  * 재정의 : 구성 요소의 setVisible (...)
- * 매개 변수 : b true이면 Window를 표시하고 그렇지 않으면 Window를 숨 깁니다.
+ * 매개 변수 : b true이면 Window를 표시하고 그렇지 않으면 Window를 숨깁니다.
  * Window 및 / 또는 해당 소유자가 아직 표시 가능하지 않은 경우 둘 다 표시 가능하게됩니다.
  * 창은 보이기 전에 유효성이 검사되며 창이 이미 보이는 경우에는 창을 앞으로 가져옵니다.
  * false이면이 Window, 하위 구성 요소 및 모든 소유 자식을 숨 깁니다. Window 및 해당 하위 구성
@@ -54,15 +54,15 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 
 	JPanel jp_north = new JPanel();
 	// insert here
+	String[] zdos = null;
 	String[] sigus = null;
 	String[] dongs = null;
-	String[] zdos = null;
 	String[] totals = { "전체" };
-	Vector<String> vzdos = new Vector<>();// vzdos.size()==>0
 	JComboBox<String> jcb_zdo = null;
 	JComboBox<String> jcb_sigu = null;
 	JComboBox<String> jcb_dong = null;
-	JTextField jtf_search = new JTextField("동이름을 입력하세요.");// Center
+	Vector<String> vzdos = new Vector<>();// vzdos.size()==>0
+	JTextField jtf_search = new JTextField("동이름을 입력하세요.");
 	JButton jbtn_search = new JButton("조회");// East
 	String cols[] = { "우편번호", "주소" };
 	String data[][] = new String[0][2];
@@ -77,8 +77,6 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 	// 생성자
 	public ZipCodeSearch() {
 		zdos = getZDOList();
-		sigus = getSIGUList();
-		dongs = getDONGList();
 		jcb_zdo = new JComboBox<>(zdos);
 		jcb_sigu = new JComboBox<>(totals);
 		jcb_dong = new JComboBox<>(totals);
@@ -88,98 +86,6 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 	// this();
 	// this.memberShip = memberShip;
 	// }
-
-	public String[] getSIGUList() {
-		String[] sigus = null;
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("SELECT '전체' sigu FROM dual" + " UNION ALL"
-				+ " SELECT sigu FROM (SELECT DISTINCT(sigu) sigu FROM zipcode_t" + " WHERE zdo = ? ORDER BY sigu);");
-
-		try {
-			dbMgr = DBConnectionMgr.getInstance();
-			con = dbMgr.getConnection();
-			pstmt = con.prepareStatement(sb.toString());
-			pstmt.setString(1, zdo);
-			rs = pstmt.executeQuery();
-			Vector<String> v = new Vector<String>();
-			while (rs.next()) {
-				String sigu = rs.getString("sigu");
-				v.add(sigu);
-			}
-			sigus = new String[v.size()];
-			v.copyInto(sigus);
-
-			dbMgr.freeConnection(con, pstmt, rs);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return sigus;
-	}
-
-	public String[] getDONGList() {
-		String[] dongs = null;
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("SELECT '전체' dong FROM dual UNION ALL SELECT dong FROM"
-				+ " (SELECT DISTINCT(dong) dong FROM zipcode_t ORDER BY dong)");
-
-		try {
-			dbMgr = DBConnectionMgr.getInstance();
-			con = dbMgr.getConnection();
-			pstmt = con.prepareStatement(sb.toString());
-			rs = pstmt.executeQuery();
-			Vector<String> v = new Vector<String>();
-			while (rs.next()) {
-				String dong = rs.getString("dong");
-				v.add(dong);
-			}
-			dongs = new String[v.size()];
-			v.copyInto(dongs);
-
-			dbMgr.freeConnection(con, pstmt, rs);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dongs;
-	}
-
-	// 화면처리부
-	public void initDisplay() {
-		jtb_zipcode.requestFocus();
-		jtb_zipcode.addMouseListener(this);
-		jbtn_search.addActionListener(this);
-		jtf_search.addFocusListener(this);
-		jtf_search.addActionListener(this);
-		jp_north.setLayout(new FlowLayout());
-
-		for (String s : vzdos) {
-			System.out.println("s===>" + s);
-		}
-		/*
-		 * String배열에 있는 정보를 굳이 벡터에 담아야 한다. 생성자 선택을 Vector타입으로 결정했기 때문이다. 벡터 자체는 값을 가지고
-		 * 있지 않는 상태이다. 값은 1차 배열 안에 초기화 되어 있다. 이것을 벡터에 재 초기화 한다. 그 후에 콤보박스를 생성하고 화면에 장착해야
-		 * 리스트에서 값을 볼 수 있을 것이다.
-		 * 
-		 */
-		jcb_zdo.addItemListener(this);
-		jcb_sigu.addItemListener(this);
-		jcb_dong.addItemListener(this);
-		jp_north.add(jcb_zdo);
-		jp_north.add(jcb_sigu);
-		jp_north.add(jcb_dong);
-		jp_north.add(jtf_search);
-		jp_north.add(jbtn_search);
-		this.add("North", jp_north);
-		this.add("Center", jsp_zipcode);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setTitle("우편번호 검색");
-		this.setSize(430, 400);
-		this.setVisible(true);
-	}
-
 	public String[] getZDOList() {
 		String[] zdos = null;
 		// 오라클 서버에 보낼 SELECT문 작성
@@ -215,32 +121,73 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 		return zdos;
 	}
 
-	// 메인메소드
-	public static void main(String[] args) {
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		ZipCodeSearch zcs = new ZipCodeSearch();
-		zcs.initDisplay();
-	}
+	public String[] getSIGUList() {
+		String[] sigus = null;
+		StringBuilder sb = new StringBuilder();
 
-	@Override
-	public void focusGained(FocusEvent e) {
-		System.out.println("focusGained 호출 성공");
-		if (e.getSource() == jtf_search) {
-			jtf_search.setText("");
+		sb.append("SELECT '전체' sigu FROM dual UNION ALL"
+				+ " SELECT sigu FROM (SELECT DISTINCT(sigu) sigu FROM zipcode_t WHERE zdo = ? ORDER BY sigu)");
+
+		try {
+			dbMgr = DBConnectionMgr.getInstance();
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sb.toString());
+			pstmt.setString(1, zdo);
+			rs = pstmt.executeQuery();
+			Vector<String> v = new Vector<String>();
+			while (rs.next()) {
+				String sigu = rs.getString("sigu");
+				v.add(sigu);
+			}
+			sigus = new String[v.size()];
+			v.copyInto(sigus);
+
+			dbMgr.freeConnection(con, pstmt, rs);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return sigus;
 	}
 
-	@Override
-	public void focusLost(FocusEvent e) {
+	public String[] getDONGList() {
+		String[] dongs = null;
+		StringBuilder sb = new StringBuilder();
 
+		sb.append("SELECT '전체' dong FROM dual UNION ALL SELECT dong FROM"
+				+ " (SELECT DISTINCT(dong) dong FROM zipcode_t WHERE sigu = ? ORDER BY dong)");
+
+		try {
+			dbMgr = DBConnectionMgr.getInstance();
+			con = dbMgr.getConnection();
+			pstmt = con.prepareStatement(sb.toString());
+			pstmt.setString(1, sigu);
+			rs = pstmt.executeQuery();
+			Vector<String> v = new Vector<String>();
+			while (rs.next()) {
+				String dong = rs.getString("dong");
+				v.add(dong);
+			}
+			dongs = new String[v.size()];
+			v.copyInto(dongs);
+
+			dbMgr.freeConnection(con, pstmt, rs);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dongs;
 	}
 
-	public void refreshData(String zdo, String dong) {
-		System.out.println("zdo:" + zdo + ", dong:" + dong);
+	public void refreshData(String zdo, String sigu, String dong) {
+		System.out.println("zdo: " + zdo + ", sigu : " + sigu + ", dong: " + dong);
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT address, zipcode FROM zipcode_t WHERE 1 = 1");
 		if (zdo != null && zdo.length() > 0) {
 			sql.append(" AND zdo = ?");
+		}
+		if (sigu != null && sigu.length() > 0) {
+			sql.append(" AND sigu LIKE '%'||?||'%'");
 		}
 		if (dong != null && dong.length() > 0) {
 			sql.append(" AND dong LIKE '%'||?||'%'");
@@ -254,6 +201,9 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 			pstmt = con.prepareStatement(sql.toString());
 			if (zdo != null && zdo.length() > 0) {
 				pstmt.setString(i++, zdo);
+			}
+			if (sigu != null && sigu.length() > 0) {
+				pstmt.setString(i++, sigu);
 			}
 			if (dong != null && dong.length() > 0) {
 				pstmt.setString(i++, dong);
@@ -294,39 +244,113 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 		}
 	}
 
+	// 화면처리부
+	public void initDisplay() {
+		jtb_zipcode.requestFocus();
+		jtb_zipcode.addMouseListener(this);
+		jbtn_search.addActionListener(this);
+		jtf_search.addFocusListener(this);
+		jtf_search.addActionListener(this);
+		jp_north.setLayout(new FlowLayout());
+
+		for (String s : vzdos) {
+			System.out.println("s===>" + s);
+		}
+		/*
+		 * String배열에 있는 정보를 굳이 벡터에 담아야 한다. 생성자 선택을 Vector타입으로 결정했기 때문이다. 벡터 자체는 값을 가지고
+		 * 있지 않는 상태이다. 값은 1차 배열 안에 초기화 되어 있다. 이것을 벡터에 재 초기화 한다. 그 후에 콤보박스를 생성하고 화면에 장착해야
+		 * 리스트에서 값을 볼 수 있을 것이다.
+		 */
+		jcb_zdo.addItemListener(this);
+		jcb_sigu.addItemListener(this);
+		jcb_dong.addItemListener(this);
+		jp_north.add(jcb_zdo);
+		jp_north.add(jcb_sigu);
+		jp_north.add(jcb_dong);
+		jp_north.add(jtf_search);
+		jp_north.add(jbtn_search);
+		this.add("North", jp_north);
+		this.add("Center", jsp_zipcode);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setTitle("우편번호 검색");
+		this.setSize(600, 400);
+		this.setVisible(true);
+	}
+
+	// 메인메소드
+	public static void main(String[] args) {
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		ZipCodeSearch zcs = new ZipCodeSearch();
+		zcs.initDisplay();
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		System.out.println("focusGained 호출 성공");
+		if (e.getSource() == jtf_search) {
+			jtf_search.setText("");
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if (obj == jbtn_search || obj == jtf_search) {
-			String myDong = jtf_search.getText();
-			refreshData(zdo, myDong);
+
+//			String myDong = jtf_search.getText();
+			refreshData(zdo, sigu, dong);
 		}
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		Object obj = e.getSource();
-		if (obj == jcb_zdo) {
+		Object obj = e.getItem();
+		if (obj == jcb_zdo.getSelectedItem()) {
 			zdo = zdos[jcb_zdo.getSelectedIndex()];
+			jcb_sigu.removeAllItems();
+			sigus = getSIGUList();
+			for (int i = 0; i < sigus.length; i++) {
+				jcb_sigu.addItem(sigus[i]);
+			}
+			jcb_dong.removeAllItems();
+			jcb_dong.addItem(totals[0]);
+		} else if (obj == jcb_sigu.getSelectedItem()) {
+			if ("전체".equals(obj) == false) {
+				sigu = sigus[jcb_sigu.getSelectedIndex()];
+				jcb_dong.removeAllItems();
+				dongs = getDONGList();
+				for (int j = 0; j < dongs.length; j++) {
+					jcb_dong.addItem(dongs[j]);
+				}
+			} else {
+				sigu = "";
+			}
+		} else if (obj == jcb_dong.getSelectedItem()) {
+			if ("전체".equals(obj) == false) {
+				dong = dongs[jcb_dong.getSelectedIndex()];
+			} else {
+				dong = "";
+			}
 		}
-
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -335,12 +359,10 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 		if (e.getClickCount() == 2) {
 			System.out.println("더블클릭");
 		}
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 }

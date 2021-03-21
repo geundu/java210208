@@ -18,11 +18,13 @@ public class BreadStack {
 			}
 		}
 		bread = breadVector.remove(breadVector.size() - 1);
+		System.out.println("빵이 팔렸습니다.");
 		return bread;
 	}
 
-	public void push(String bread) {
-		breadVector.add(bread);
+	public synchronized void push(String bread) {
 		this.notify();
+		breadVector.add(bread);
+		System.out.println("빵이 만들어졌습니다.");
 	}
 }
