@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="mybatis.mapper.ZipcodeMapper">
-	<select id="getZDOList" parameterType="java.util.Map" resultType="java.util.Map">
+	<select id="getZDOList" resultType="String">
 
 		SELECT '전체' zdo FROM dual
 		UNION ALL
-		SELECT zdo FROM (
-		SELECT
-		DISTINCT(zdo) zdo FROM zipcode_t ORDER BY zdo)
+		SELECT zdo FROM
+		(SELECT DISTINCT(zdo) zdo FROM zipcode_t ORDER
+		BY zdo)
 
 	</select>
 	<select id="refreshData" parameterType="java.util.Map" resultType="java.util.Map">

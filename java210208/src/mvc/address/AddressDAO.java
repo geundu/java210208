@@ -1,32 +1,27 @@
-package com.design.zipcode;
+package mvc.address;
 
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-public class ZipCodeDAO_MyBatis {
-
+public class AddressDAO {
 	String				resource	= "mybatis\\step1\\MapperConfig.xml";
 	SqlSessionFactory	sqlMapper	= null;
 
-	public List<String> getZDOList() {
-		List<String>	bookList	= null;
+	public List<AddressVO> selectList() {
+		List<AddressVO>	bookList	= null;
 		SqlSession		session		= null;
 
 		try {
 			Reader reader = Resources.getResourceAsReader(resource);
 			sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-			// auto commit true
-//			session = sqlMapper.openSession(true);
-			// auto commit false
 			session = sqlMapper.openSession();
-			bookList = session.selectList("mybatis.mapper.ZipcodeMapper.getZDOList");
+			bookList = session.selectList("mybatis.mapper.AddressMapper.selectList");
 
 			session.close();
 		}
@@ -37,14 +32,10 @@ public class ZipCodeDAO_MyBatis {
 		return bookList;
 	}
 
-	public static void main(String[] args) {
-		List<String>		result	= new Vector<String>();
-		ZipCodeDAO_MyBatis	dao		= new ZipCodeDAO_MyBatis();
-		result = dao.getZDOList();
-
-		for (String al : result) {
-			System.out.println(al);
-		}
-
-	}
+//	public static void main(String[] args) {
+//		AddressDAO					bDAO		= new AddressDAO();
+//		List<Map<String, Object>>	bookList	= null;
+//		bookList = bDAO.getBookList();
+//		System.out.println(bookList);
+//	}
 }

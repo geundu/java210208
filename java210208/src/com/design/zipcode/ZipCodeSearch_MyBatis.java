@@ -12,8 +12,11 @@ import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -23,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
 import com.util.DBConnectionMgr;
 
 /*
@@ -42,7 +46,8 @@ import com.util.DBConnectionMgr;
  * false이면이 Window, 하위 구성 요소 및 모든 소유 자식을 숨 깁니다. Window 및 해당 하위 구성
  * 요소는 #setVisible (true)를 호출하여 다시 표시 할 수 있습니다.
  */
-public class ZipCodeSearch_MyBatis extends JFrame implements MouseListener, ItemListener, FocusListener, ActionListener {
+public class ZipCodeSearch_MyBatis extends JFrame
+							implements MouseListener, ItemListener, FocusListener, ActionListener {
 
 	// 선언부
 	String				zdo			= null;
@@ -62,7 +67,7 @@ public class ZipCodeSearch_MyBatis extends JFrame implements MouseListener, Item
 	String[]			sigus		= null;
 	String[]			dongs		= null;
 	String[]			totals		= { "전체" };
-	JComboBox<String>	jcb_zdo		= null;
+	JComboBox<Object>	jcb_zdo		= null;
 	JComboBox<String>	jcb_sigu	= null;
 	JComboBox<String>	jcb_dong	= null;
 	Vector<String>		vzdos		= new Vector<>();														// vzdos.size()==>0
@@ -76,13 +81,14 @@ public class ZipCodeSearch_MyBatis extends JFrame implements MouseListener, Item
 	JScrollPane			jsp_zipcode	= new JScrollPane(jtb_zipcode, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 								JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	MemberShip			memberShip	= null;
-	ZipCodeDAO_MyBatis			zcDAO		= new ZipCodeDAO_MyBatis();
+	ZipCodeDAO_MyBatis	zcDAO		= new ZipCodeDAO_MyBatis();
 
 	// 생성자
 	public ZipCodeSearch_MyBatis() {
 
-		zdos = getZDOList();
-		jcb_zdo = new JComboBox<>(zdos);
+//		zdos = getZDOList();
+		// 첫번째 콤보박스 하다가 말았음
+		jcb_zdo = new JComboBox<>();
 		jcb_sigu = new JComboBox<>(totals);
 		jcb_dong = new JComboBox<>(totals);
 	}
@@ -91,45 +97,6 @@ public class ZipCodeSearch_MyBatis extends JFrame implements MouseListener, Item
 	// this();
 	// this.memberShip = memberShip;
 	// }
-	public String[] getZDOList() {
-
-		String[]		zdos	= null;
-		// 오라클 서버에 보낼 SELECT문 작성
-		// String 자체는 원본이 바뀌지 않는 특성을 가진다.
-		// StringBuilder는 단일 스레스에서 안전하고,
-		// StringBuffer는 다중 스레드에서 안전하다.
-		StringBuilder	sb		= new StringBuilder();
-
-		sb.append("SELECT '전체' zdo FROM dual"
-									+ " UNION ALL"
-									+ " SELECT zdo FROM"
-									+ " (SELECT DISTINCT(zdo) zdo FROM zipcode_t ORDER BY zdo)");
-
-		try {
-			dbMgr = DBConnectionMgr.getInstance();
-			con = dbMgr.getConnection();
-			pstmt = con.prepareStatement(sb.toString());
-			rs = pstmt.executeQuery();
-			Vector<String> v = new Vector<String>();
-
-			// List<String> v2 = new Vector<String>();
-			while (rs.next()) {
-				String zdo = rs.getString("zdo");
-				v.add(zdo);
-			}
-			zdos = new String[v.size()];
-			v.copyInto(zdos);
-			// 리스트 타입으로 선언해서 벡터로 인스턴스화 한다고 해서 copyInto 쓸 수가 없다
-			// v2.copyInto(zdos);
-
-			dbMgr.freeConnection(con, pstmt, rs);
-
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return zdos;
-	}
 
 	public String[] getSIGUList() {
 
