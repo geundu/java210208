@@ -15,29 +15,33 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import common.jdbc.MemberDAO;
+
 public class MemberShip extends JDialog implements ActionListener {
 	// 선언부
-	JPanel jp_center = new JPanel();
-	JLabel jlb_id = new JLabel("아이디");
-	JTextField jtf_id = new JTextField(10);
-	JLabel jlb_pw = new JLabel("패스워드");
-	JTextField jtf_pw = new JTextField(10);
-	JLabel jlb_nickName = new JLabel("대화명");
-	JTextField jtf_nickName = new JTextField(20);
-	JLabel jlb_name = new JLabel("성명");
-	JTextField jtf_name = new JTextField(30);
-	JLabel jlb_gender = new JLabel("성별");
-	String[] genderList = { "남자", "여자" };
-	JComboBox jcb_gender = new JComboBox(genderList);
-	JLabel jlb_zipcode = new JLabel("우편번호");
-	public JTextField jtf_zipcode = new JTextField(6);
-	JLabel jlb_address = new JLabel("주소");
-	public JTextField jtf_address = new JTextField(100);
-	JButton jbtn_zipcode = new JButton("우편번호찾기");
-	JScrollPane jsp = null;
-	JPanel jp_south = new JPanel();
-	JButton jbtn_ins = new JButton("등록");
-	JButton jbtn_close = new JButton("닫기");
+	JPanel				jp_center		= new JPanel();
+	JLabel				jlb_id			= new JLabel("아이디");
+	public JTextField	jtf_id			= new JTextField(10);
+	JLabel				jlb_pw			= new JLabel("패스워드");
+	public JTextField	jtf_pw			= new JTextField(10);
+	JLabel				jlb_nickName	= new JLabel("대화명");
+	public JTextField	jtf_nickName	= new JTextField(20);
+	JLabel				jlb_name		= new JLabel("성명");
+	public JTextField	jtf_name		= new JTextField(30);
+	JLabel				jlb_gender		= new JLabel("성별");
+	String[]			genderList		= { "남자", "여자" };
+	public JComboBox	jcb_gender		= new JComboBox(genderList);
+	JLabel				jlb_zipcode		= new JLabel("우편번호");
+	public JTextField	jtf_zipcode		= new JTextField(6);
+	JLabel				jlb_address		= new JLabel("주소");
+	public JTextField	jtf_address		= new JTextField(100);
+	JButton				jbtn_zipcode	= new JButton("우편번호찾기");
+	JScrollPane			jsp				= null;
+	JPanel				jp_south		= new JPanel();
+	JButton				jbtn_ins		= new JButton("등록");
+	JButton				jbtn_close		= new JButton("닫기");
+
+	public int			gender			= 0;
 //	ZipCodeSearch zcs = new ZipCodeSearch(this);
 
 	// 생성자
@@ -48,6 +52,8 @@ public class MemberShip extends JDialog implements ActionListener {
 	// 화면처리부
 	public void initDisplay() {
 		jbtn_zipcode.addActionListener(this);
+		jbtn_ins.addActionListener(this);
+		jbtn_close.addActionListener(this);
 		jp_center.setLayout(null);
 		jlb_id.setBounds(20, 20, 100, 20);
 		jtf_id.setBounds(120, 20, 120, 20);
@@ -91,15 +97,47 @@ public class MemberShip extends JDialog implements ActionListener {
 		this.setVisible(true);
 	}
 
-	public static void main(String[] args) {
-		new MemberShip();
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
+		boolean	isRefused	= false;
+		Object	obj			= e.getSource();
+
 		if (obj == jbtn_zipcode) {
+			ZipCodeSearch zipcodeSearch = new ZipCodeSearch(this);
 		}
 
+		else if (obj == jbtn_ins) {
+
+			if ("".equals(jtf_id.getText()) || "".equals(jtf_address.getText()) || "".equals(jtf_name.getText())
+										|| "".equals(jtf_nickName.getText()) || "".equals(jtf_pw.getText())
+										|| "".equals(jtf_zipcode.getText())) {
+				JOptionPane.showMessageDialog(this, "모든 정보를 입력해주십시오");
+			}
+			else {
+
+				if ("남자".equals(jcb_gender.getSelectedItem())) {
+					gender = 0;
+				}
+				else {
+					gender = 1;
+				}
+
+				MemberDAO memberDAO = new MemberDAO();
+				isRefused = memberDAO.join(this);
+
+				if (isRefused != true) {
+					JOptionPane.showMessageDialog(this, "회원가입 성공");
+					this.dispose();
+				}
+				else {
+					JOptionPane.showMessageDialog(this, "중복된 아이디입니다");
+					jtf_id.setText("");
+				}
+			}
+		}
+
+		else if (obj == jbtn_close) {
+			this.dispose();
+		}
 	}
 }

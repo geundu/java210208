@@ -16,18 +16,18 @@ import javax.swing.JTextField;
 import common.jdbc.MemberDAO;
 
 public class LoginForm extends JFrame implements ActionListener {
-	String imgPath = "src\\";
-	ImageIcon ig = new ImageIcon(imgPath + "main.png");
-	JLabel jlb_id = new JLabel("아이디");
-	JTextField jtf_id = new JTextField("");
-	JLabel jlb_pw = new JLabel("비밀번호");
-	JPasswordField jtf_pw = new JPasswordField("");
-	Font font = new Font("맑은 고딕", Font.BOLD, 15);
-	JButton jbtn_login = new JButton(new ImageIcon(imgPath + "login.png"));
-	JButton jbtn_join = new JButton(new ImageIcon(imgPath + "confirm.png"));
+	String			imgPath		= "src\\";
+	ImageIcon		ig			= new ImageIcon(imgPath + "main.png");
+	JLabel			jlb_id		= new JLabel("아이디");
+	JTextField		jtf_id		= new JTextField("");
+	JLabel			jlb_pw		= new JLabel("비밀번호");
+	JPasswordField	jtf_pw		= new JPasswordField("");
+	Font			font		= new Font("맑은 고딕", Font.BOLD, 15);
+	JButton			jbtn_login	= new JButton(new ImageIcon(imgPath + "login.png"));
+	JButton			jbtn_join	= new JButton(new ImageIcon(imgPath + "confirm.png"));
 //	TalkDao tDao = new TalkDao();
-	public String nickName = null;// 닉네임 등록
-	public boolean isActivate = true;
+	public String	nickName	= null;													// 닉네임 등록
+	public boolean	isActivate	= true;
 
 	public LoginForm() {
 		initDisplay();
@@ -44,6 +44,7 @@ public class LoginForm extends JFrame implements ActionListener {
 
 	public void initDisplay() {
 		jbtn_login.addActionListener(this);
+		jbtn_join.addActionListener(this);
 		this.setContentPane(new MyPanel());
 		this.setLayout(null);// 디폴트 - BorderLayout
 		jlb_id.setBounds(45, 200, 80, 40);
@@ -60,51 +61,60 @@ public class LoginForm extends JFrame implements ActionListener {
 		this.add(jbtn_join);
 		jbtn_login.setBounds(175, 285, 120, 40);
 		this.add(jbtn_login);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setTitle("자바채팅 Ver2.0");
 		this.setLocation(500, 100);
 		this.setSize(350, 600);
 		this.setVisible(true);
 	}
 
-//	public static void main(String[] args) {
-//		LoginForm login = new LoginForm();
-//		login.initDisplay();
-//	}
+	public static void main(String[] args) {
+		LoginForm login = new LoginForm();
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object obj = e.getSource();
-		MemberDAO md = new MemberDAO();
+		Object		obj			= e.getSource();
+		MemberDAO	memberDAO	= new MemberDAO();
+
 		if (jbtn_login == obj) {
+
 			if ("".equals(jtf_id.getText()) || "".equals(jtf_pw.getText())) {
 				JOptionPane.showMessageDialog(this, "아이디와 비밀번호를 확인하세요.");
 				return;
 			}
+
 			try {
-				String mem_id = jtf_id.getText();
-				String mem_pw = jtf_pw.getText();
-				String msg = md.login(mem_id, mem_pw);
+				String	mem_id	= jtf_id.getText();
+				String	mem_pw	= jtf_pw.getText();
+				String	msg		= memberDAO.login(mem_id, mem_pw);
 
 				if ("아이디가 존재하지 않습니다.".equals(msg)) {
 					JOptionPane.showMessageDialog(this, "아이디를 확인하세요.");
 					jtf_id.setText("");
 					jtf_pw.setText("");
 					return;
-				} else if ("비밀번호가 틀립니다.".equals(msg)) {
+				}
+				else if ("비밀번호가 틀립니다.".equals(msg)) {
 					JOptionPane.showMessageDialog(this, "비밀번호를 확인하세요.");
 					jtf_id.setText("");
 					jtf_pw.setText("");
 					return;
-				} else {
+				}
+				else {
 					nickName = msg;
 					isActivate = false;
 					JOptionPane.showMessageDialog(this, "로그인 성공", "info", JOptionPane.INFORMATION_MESSAGE);
 					this.setVisible(false);
 				}
 
-			} catch (Exception e2) {
+			}
+			catch (Exception e2) {
 				e2.printStackTrace();
 			}
+		}
+		else if (jbtn_join == obj) {
+			MemberShip membershipView = new MemberShip();
 		}
 	}
 }

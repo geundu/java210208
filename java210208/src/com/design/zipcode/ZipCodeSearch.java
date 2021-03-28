@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,7 +43,7 @@ import com.util.DBConnectionMgr;
  * false이면이 Window, 하위 구성 요소 및 모든 소유 자식을 숨 깁니다. Window 및 해당 하위 구성
  * 요소는 #setVisible (true)를 호출하여 다시 표시 할 수 있습니다.
  */
-public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener, FocusListener, ActionListener {
+public class ZipCodeSearch extends JDialog implements MouseListener, ItemListener, FocusListener, ActionListener {
 
 	// 선언부
 	String				zdo			= null;
@@ -79,12 +80,16 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 	ZipCodeDAO			zcDAO		= new ZipCodeDAO();
 
 	// 생성자
-	public ZipCodeSearch() {
+	public ZipCodeSearch(MemberShip memberShip) {
+
+		this.memberShip = memberShip;
 
 		zdos = getZDOList();
 		jcb_zdo = new JComboBox<>(zdos);
 		jcb_sigu = new JComboBox<>(totals);
 		jcb_dong = new JComboBox<>(totals);
+
+		initDisplay();
 	}
 
 	// public ZipCodeSearch(MemberShip memberShip) {
@@ -307,19 +312,19 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 		jp_north.add(jbtn_search);
 		this.add("North", jp_north);
 		this.add("Center", jsp_zipcode);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setTitle("우편번호 검색");
 		this.setSize(600, 400);
 		this.setVisible(true);
 	}
 
 	// 메인메소드
-	public static void main(String[] args) {
-
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		ZipCodeSearch zcs = new ZipCodeSearch();
-		zcs.initDisplay();
-	}
+//	public static void main(String[] args) {
+//
+//		JFrame.setDefaultLookAndFeelDecorated(true);
+//		ZipCodeSearch zcs = new ZipCodeSearch();
+//		zcs.initDisplay();
+//	}
 
 	@Override
 	public void focusGained(FocusEvent e) {
@@ -409,7 +414,15 @@ public class ZipCodeSearch extends JFrame implements MouseListener, ItemListener
 	public void mousePressed(MouseEvent e) {
 
 		if (e.getClickCount() == 2) {
-			System.out.println("더블클릭");
+			String	zipcode	= dtm_zipcode.getValueAt(jtb_zipcode.getSelectedRow(),
+										jtb_zipcode.getColumnCount() - 2).toString();
+			String	address	= (String) dtm_zipcode.getValueAt(jtb_zipcode.getSelectedRow(),
+										jtb_zipcode.getColumnCount() - 1);
+
+			memberShip.jtf_zipcode.setText(zipcode);
+			memberShip.jtf_address.setText(address);
+
+			this.dispose();
 		}
 	}
 
