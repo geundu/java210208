@@ -38,7 +38,7 @@ public class MyBatisZipCodeDAO {
 		MyBatisZipCodeDAO	mbzcd		= new MyBatisZipCodeDAO();
 		List<ZipCodeVO>		zipcodeList	= new ArrayList<ZipCodeVO>();
 		ZipCodeVO			pzcVO		= new ZipCodeVO();
-		pzcVO.setDong("가산동");
+		pzcVO.setDong("부림동");
 		zipcodeList = mbzcd.getZipCodeList(pzcVO);
 
 		for (ZipCodeVO index : zipcodeList) {

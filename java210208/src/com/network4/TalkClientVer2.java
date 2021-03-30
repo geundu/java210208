@@ -19,7 +19,7 @@ public class TalkClientVer2 extends JFrame {
 	ObjectInputStream	ois			= null;
 	ObjectOutputStream	oos			= null;
 	String				ip			= "127.0.0.1";
-	int					port		= 3002;
+	int					port		= 9234;
 	String				nickName	= null;
 
 	public TalkClientVer2() {

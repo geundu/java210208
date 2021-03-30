@@ -72,7 +72,7 @@ public class TalkServer extends JFrame implements Runnable {
 		boolean isStop = false;
 
 		try {
-			server = new ServerSocket(3002);
+			server = new ServerSocket(9234);
 
 			while (!isStop) {
 				client = server.accept();// 은수소켓저장(은수컴에 포트번호 할당)
