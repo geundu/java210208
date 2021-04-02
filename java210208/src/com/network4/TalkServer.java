@@ -1,6 +1,5 @@
 package com.network4;
 
-import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.ServerSocket;
@@ -8,12 +7,9 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 /*
  * 서버는 24시간 가동되어야 하고 여러 사용자가 동시에 접속할 수  있다.
