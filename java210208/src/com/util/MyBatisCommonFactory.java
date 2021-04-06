@@ -20,7 +20,8 @@ public class MyBatisCommonFactory {
 				if (sqlSessionFactory == null) {
 
 					try {
-						String	resource	= "mybatis/step1/MapperConfig.xml";
+//						String	resource	= "mybatis/step1/MapperConfig.xml";
+						String	resource	= "config.xml";
 						Reader	reader		= Resources.getResourceAsReader(resource);
 						sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
 					}

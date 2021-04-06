@@ -17,24 +17,28 @@ public class AddressCtrl {
 
 	}
 
-	public AddressVO send(AddressVO vo) throws Exception {
-		String command = vo.getCommand();
+	public AddressVO send(AddressVO pvo) throws Exception {
+		String command = pvo.getCommand();
 
 		if (_DEL.equals(command)) {
+			System.out.println("_DEL 호출 성공");
 			DeleteEntity del = new DeleteEntity();
-			del.delete(vo);
+			del.delete(pvo);
 		}
 		else if (_INS.equals(command)) {
+			System.out.println("_INS 호출 성공");
 			RegisterEntity regi = new RegisterEntity();
-			regi.insert(vo);
+			regi.insert(pvo);
 		}
 		else if (_MOD.equals(command)) {
+			System.out.println("_MOD 호출 성공");
 			ModifyEntity modi = new ModifyEntity();
-			modi.update(vo);
+			modi.update(pvo);
 		}
 		else if (_SEL.equals(command)) {
+			System.out.println("_SEL 호출 성공");
 			RetrieveEntity ret = new RetrieveEntity();
-			ret.select(vo);
+			ret.select(pvo);
 		}
 		return returnVO;
 	}
@@ -50,6 +54,14 @@ public class AddressCtrl {
 		RetrieveEntity	ret			= new RetrieveEntity();
 		selectAll = ret.selectList();
 		System.out.println("sendAll() 호출 성공 - return type : List<AddressVO>");
+		return selectAll;
+	}
+
+	public List<Map<String, Object>> sendAllMap() throws Exception {
+		List<Map<String, Object>>	selectAll	= null;
+		RetrieveEntity				ret			= new RetrieveEntity();
+//		selectAll = ret.selectList();
+		System.out.println("sendAllMap() 호출 성공 - return type : List<Map<String, Object>>");
 		return selectAll;
 	}
 }
