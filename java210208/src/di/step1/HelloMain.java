@@ -43,5 +43,8 @@ public class HelloMain {
 
 		HelloBean	helloBean	= (HelloBean) context.getBean("helloBean");
 		System.out.println(helloBean.getGreeting("Hi~"));
+
+		((ClassPathXmlApplicationContext) context2).close();
+		((ClassPathXmlApplicationContext) context).close();
 	}
 }

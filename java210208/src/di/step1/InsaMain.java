@@ -18,5 +18,6 @@ public class InsaMain {
 
 		insalist_not_spring.printList();
 
+		((ClassPathXmlApplicationContext) context).close();
 	}
 }

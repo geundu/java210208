@@ -36,7 +36,8 @@ public class TimeServer extends Thread {
 
 	Socket c_socket = null;
 
-	public TimeServer() {}
+	public TimeServer() {
+	}
 
 	public TimeServer(Socket c_socket) {
 		this.c_socket = c_socket;
@@ -44,51 +45,58 @@ public class TimeServer extends Thread {
 
 	@Override
 	public void run() {
-		try {
-			PrintWriter sendWriter = new PrintWriter(c_socket.getOutputStream(), true);
-			boolean isFlag_run = false;
 
-			while(!isFlag_run) {
+		try {
+			PrintWriter	sendWriter	= new PrintWriter(c_socket.getOutputStream(), true);
+			boolean		isFlag_run	= false;
+
+			while (!isFlag_run) {
 
 				sendWriter.println(getTimer());
 //				sendWriter.flush();
-				sleep(1000);//ms 단위 설정함 지연시키기 스레드 경합 스레드 순서 스레드...
+				sleep(1000);// ms 단위 설정함 지연시키기 스레드 경합 스레드 순서 스레드...
 			}
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public String getTimer() {
-		Calendar cal = Calendar.getInstance();
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		int min = cal.get(Calendar.MINUTE);
-		int sec = cal.get(Calendar.SECOND);
+		Calendar	cal		= Calendar.getInstance();
+		int			hour	= cal.get(Calendar.HOUR_OF_DAY);
+		int			min		= cal.get(Calendar.MINUTE);
+		int			sec		= cal.get(Calendar.SECOND);
 
 		return hour + ":" + min + ":" + sec;
 	}
-	//메인메서드도 스레드이다 디폴트 스레드. 엔트리 포인트
+
+	// 메인메서드도 스레드이다 디폴트 스레드. 엔트리 포인트
 	public static void main(String[] args) {
+
 		try {
-			ServerSocket s_socket = new ServerSocket(9234);
-			//taskkill -pid [pid] -f
-			Socket c_socket = null;
-			boolean isFlag = false;
+			ServerSocket	s_socket	= new ServerSocket(9234);
+			// taskkill -pid [pid] -f
+			Socket			c_socket	= null;
+			boolean			isFlag		= false;
 
 			while (!isFlag) {
 				c_socket = s_socket.accept();
-				//accept에서 대기타기 때문에 로그 UI같은 걸 띄우고 싶으면 이 전에 해야 함
-				//화면 - input - operation - output 소통의 시작점
+				// accept에서 대기타기 때문에 로그 UI같은 걸 띄우고 싶으면 이 전에 해야 함
+				// 화면 - input - operation - output 소통의 시작점
 				System.out.println(c_socket.toString());
-				
+
 				TimeServer ts = new TimeServer(c_socket);
 
 				ts.run();
 			}
+			s_socket.close();
 
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 
