@@ -14,11 +14,11 @@ public class RetrieveEntity {
 		return null;
 	}
 
-	public List<AddressVO> selectList() {
+	public List<AddressVO> selectList(AddressVO pVO) {
 		List<AddressVO>	addressList	= null;
 
 		AddressDAO		aDAO		= new AddressDAO();
-		addressList = aDAO.selectList();
+		addressList = aDAO.selectList(pVO);
 
 		System.out.println("RetrieveEntity's selectList(AddressVO) 호출 성공");
 		return addressList;

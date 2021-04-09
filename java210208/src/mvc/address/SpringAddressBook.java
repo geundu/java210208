@@ -8,62 +8,67 @@ import javax.swing.table.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.*;
 import java.util.List;
 
-public class AddressBook extends JFrame {
-
-	Logger						logger	= LogManager.getLogger(AddressBook.class);
+public class SpringAddressBook extends JFrame {
+	Logger							logger	= (Logger) LogManager.getLogger(SpringAddressBook.class);
 
 	// 메인화면에 사용할 컴포넌트들을 선언합니다.
-	private JMenuBar			menuBar;
-	private JMenu				menuMenu;
-	private JMenu				menuAbout;
-	private JMenuItem			menuItemConnect;
-	private JMenuItem			menuItemInsert;
-	private JMenuItem			menuItemUpdate;
-	private JMenuItem			menuItemDelete;
-	private JMenuItem			menuItemDetail;
-	private JMenuItem			menuItemAbout;
-	private JSeparator			menuSeparator1;
-	private JSeparator			menuSeparator2;
-	private JMenuItem			menuItemExit;
-	private JToolBar			toolbar;
-	private JButton				btnInsert;
-	private JButton				btnUpdate;
-	private JButton				btnDelete;
-	private JButton				btnDetail;
-	private JScrollPane			jScrollPane1;
-	private JTable				table;
-	private MyTableModel		myTableModel;
-	private JPanel				panelTimer;
-	private JLabel				labelTimer;
+	private JMenuBar				menuBar;
+	private JMenu					menuMenu;
+	private JMenu					menuAbout;
+	private JMenuItem				menuItemConnect;
+	private JMenuItem				menuItemInsert;
+	private JMenuItem				menuItemUpdate;
+	private JMenuItem				menuItemDelete;
+	private JMenuItem				menuItemDetail;
+	private JMenuItem				menuItemAbout;
+	private JSeparator				menuSeparator1;
+	private JSeparator				menuSeparator2;
+	private JMenuItem				menuItemExit;
+	private JToolBar				toolbar;
+	private JButton					btnInsert;
+	private JButton					btnUpdate;
+	private JButton					btnDelete;
+	private JButton					btnDetail;
+	private JScrollPane				jScrollPane1;
+	private JTable					table;
+	private MyTableModel			myTableModel;
+	private JPanel					panelTimer;
+	private JLabel					labelTimer;
 
-	private JOptionPane			optionDlg;
-	private ModifyDialog		mDialog;
-	private Font				font;
-	private String				path;
+	private JOptionPane				optionDlg;
+	private ModifyDialog			mDialog;
+	private Font					font;
+	private String					path;
 
 	// DB작업을 중개해줄 Controller 클래스
-	private AddressCtrl			ctrl;
-	public static AddressBook	abook	= null;
+	private AddressCtrl				ctrl;
+	public static SpringAddressBook	abook	= null;
 
 	// 메인 메쏘드는 AddressBook의 인스턴스를 생성하고 보여주는 일만 합니다.
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 		System.setProperty(XmlConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j.xml");
-		abook = new AddressBook();
-		abook.setResizable(false);
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		ApplicationContext context = new ClassPathXmlApplicationContext("mvc\\address\\addressBook.xml");
+		abook = (SpringAddressBook) context.getBean("aBookBean");
+		// abook = new SpringAddressBook();
+
 		abook.setVisible(true);
 	}
 
 	// 생성자는 컴포넌트들을 초기화합니다.
-	public AddressBook() {
+	public SpringAddressBook() {
 		initComponents();
 	}
 
 	// 초기화 작업은 컴포넌트들의 값을 셋팅하고 배치합니다.
 	private void initComponents() {
+		logger.info("initComponents 호출 성공");
 		// DefaultTableModel을 상속받은 MyTableModel 클래스가 테이블의
 		// 데이타를 담당합니다.
 		myTableModel = new MyTableModel();
@@ -71,9 +76,7 @@ public class AddressBook extends JFrame {
 		// 메뉴바, 메뉴, 메뉴 아이템을 정의합니다.
 		menuBar = new JMenuBar();
 		menuMenu = new JMenu();
-		menuMenu.setMnemonic('M');
 		menuAbout = new JMenu();
-		menuAbout.setMnemonic('A');
 		menuItemConnect = new JMenuItem();
 		menuItemInsert = new JMenuItem();
 		menuItemUpdate = new JMenuItem();
@@ -83,7 +86,7 @@ public class AddressBook extends JFrame {
 		menuSeparator1 = new JSeparator();
 		menuSeparator2 = new JSeparator();
 		menuItemExit = new JMenuItem();
-		menuMenu.setText("메뉴(M)");
+		menuMenu.setText("메뉴");
 		menuMenu.setFont(font);
 
 		// 툴바와 이미지 버튼을 정의합니다.
@@ -103,7 +106,7 @@ public class AddressBook extends JFrame {
 		labelTimer.setFont(font);
 		panelTimer = new JPanel();
 		font = new Font("굴림", 0, 12);
-		path = "src\\mvc\\address\\";
+		path = "src//mvc//address//";
 
 		// About 화면을 출력할 대화상자 정의
 		optionDlg = new JOptionPane();
@@ -116,7 +119,7 @@ public class AddressBook extends JFrame {
 		menuItemConnect.setText("DB 연결");
 		menuItemConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("DB 연결 메뉴");
+				System.out.println("DB 연결 메뉴");
 				connectActionPerformed(evt);
 			}
 		});
@@ -167,7 +170,7 @@ public class AddressBook extends JFrame {
 		menuItemExit.setText("종료");
 		menuItemExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("종료 메뉴");
+				System.out.println("종료 메뉴");
 				exitActionPerformed(evt);
 			}
 		});
@@ -187,14 +190,14 @@ public class AddressBook extends JFrame {
 
 		// About 메뉴
 		menuAbout.setFont(font);
-		menuAbout.setText("About(A)");
+		menuAbout.setText("About");
 
 		// About 메뉴아이템
 		menuItemAbout.setFont(font);
 		menuItemAbout.setText("About");
 		menuItemAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("About 메뉴");
+				System.out.println("About 메뉴");
 				aboutActionPerformed(evt);
 			}
 		});
@@ -206,14 +209,14 @@ public class AddressBook extends JFrame {
 		setJMenuBar(menuBar);
 
 		// 프레임 관련 설정을 합니다.
-		setTitle("주소록 데모 프로그램");
+		setTitle("스프링 기반 주소록 구현");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setFont(font);
 
 		// 윈도우 리스너 설정
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				logger.info("윈도우 종료");
+				System.out.println("윈도우 종료");
 				System.exit(0);
 			}
 		});
@@ -222,7 +225,7 @@ public class AddressBook extends JFrame {
 		btnDetail.setIcon(new ImageIcon(path + "detail.gif"));
 		btnDetail.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("조회 아이콘");
+				System.out.println("조회 아이콘");
 				detailActionPerformed();
 			}
 		});
@@ -233,7 +236,7 @@ public class AddressBook extends JFrame {
 		btnInsert.setIcon(new ImageIcon(path + "new.gif"));
 		btnInsert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("입력 아이콘");
+				System.out.println("입력 아이콘");
 				addActionPerformed(evt);
 			}
 		});
@@ -243,7 +246,7 @@ public class AddressBook extends JFrame {
 		btnUpdate.setIcon(new ImageIcon(path + "update.gif"));
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("수정 아이콘");
+				System.out.println("수정 아이콘");
 				AddressVO vo = new AddressVO();
 				updateActionPerformed(vo);
 			}
@@ -254,7 +257,7 @@ public class AddressBook extends JFrame {
 		btnDelete.setIcon(new ImageIcon(path + "delete.gif"));
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				logger.info("삭제 아이콘");
+				System.out.println("삭제 아이콘");
 				deleteActionPerformed();
 			}
 		});
@@ -269,7 +272,7 @@ public class AddressBook extends JFrame {
 			public void mouseClicked(MouseEvent me) {
 
 				if (me.getClickCount() >= 2) {
-					logger.info("데이타 더블클릭");
+					System.out.println("데이타 더블클릭");
 					detailActionPerformed();
 				}
 			}
@@ -336,25 +339,7 @@ public class AddressBook extends JFrame {
 
 	// 삭제 메뉴나 삭제 아이콘 선택시 작업을 정의합니다.
 	private void deleteActionPerformed() {
-		int[]		index	= table.getSelectedRows();
-		AddressVO	pVO		= new AddressVO();
 
-		for (int i = 0; i < myTableModel.getRowCount(); i++) {
-
-			if (table.isRowSelected(i)) {
-				Integer id = Integer.parseInt(myTableModel.getValueAt(i, 0).toString());
-				pVO.setId(id);
-				pVO.setCommand("delete");
-				ctrl = new AddressCtrl();
-
-				try {
-					ctrl.send(pVO);
-				}
-				catch (Exception e) {
-					logger.info("Exception : " + e);
-				}
-			}
-		}
 	}
 
 	// 종료 메뉴 선택시 작업을 정의합니다.
@@ -365,22 +350,25 @@ public class AddressBook extends JFrame {
 	// About 메뉴 선택시 작업을 정의합니다.
 	private void aboutActionPerformed(ActionEvent evt) {
 		optionDlg.setFont(font);
-		optionDlg.showMessageDialog(this, "주소록 데모 프로그램 1.0", "About", JOptionPane.INFORMATION_MESSAGE);
+		optionDlg.showMessageDialog(this, "주소록 데모 프로그램 1.0",
+									"About", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	// 전체 데이터를 다시 조회합니다.
-	public void refreshData() {
+	public void refreshData() throws Exception {
+		logger.info("refreshData 호출 성공");
+
+		// 이미 테이블에 보여지는 데이터가 있는 경우 모두 삭제합니다.
+		while (myTableModel.getRowCount() > 0) {
+			myTableModel.removeRow(0);
+		}
+		// insert here -
 		AddressVO paVO = new AddressVO();
-		paVO.setCommand("selectAll");
-		AddressCtrl		addressCtrl	= new AddressCtrl();
-		List<AddressVO>	list		= addressCtrl.sendAll();
-	}
-}
+		paVO.setCommand("selectall");
+		AddressCtrl		abCtrl	= new AddressCtrl();
+		// AddressVO[] aVOS = abCtrl.send();
+		List<AddressVO>	list	= abCtrl.sendAll();
 
-// 데이터를 보여줄 테이블의 실제 데이터를 관리하는 클래스입니다.
-class MyTableModel extends DefaultTableModel {
-
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		return false;
 	}
+
 }

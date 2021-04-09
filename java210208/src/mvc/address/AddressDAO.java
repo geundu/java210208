@@ -13,7 +13,7 @@ public class AddressDAO {
 	String				resource	= "mybatis\\step1\\MapperConfig.xml";
 	SqlSessionFactory	sqlMapper	= null;
 
-	public List<AddressVO> selectList() {
+	public List<AddressVO> selectList(AddressVO pVO) {
 		List<AddressVO>	bookList	= null;
 		SqlSession		session		= null;
 
@@ -21,7 +21,7 @@ public class AddressDAO {
 			Reader reader = Resources.getResourceAsReader(resource);
 			sqlMapper = new SqlSessionFactoryBuilder().build(reader);
 			session = sqlMapper.openSession();
-			bookList = session.selectList("mybatis.mapper.AddressMapper.selectList");
+			bookList = session.selectList("mybatis.mapper.AddressMapper.selectList", pVO);
 
 			session.close();
 		}

@@ -1,12 +1,20 @@
 package mvc.address;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class AddressCtrl {
 
 	private AddressVO		returnVO	= new AddressVO();
 
+	// 아래와 비교되는 값들은 모두 AddressBook에서 받아오거나 ModifyDialog에서 받아와야 한다.
+	// ModifyDialog에서는 입력, 수정만 처리한다.
+	// 입력일 때는 INSERT INTO [table](column1, column2, ...) VALUES (?, ?, ...)
+	// 수정일 때는 UPDATE [table] SET address = '서울시 마포구 공덕동', ... WHERE ano = 5;
+	// 삭제는 AddressBook의 JTable에서 직접 처리한다.
+	// DELETE FROM [table] WHERE ano = 5;
+	// command = delete;
+	// ano = 5;
 	private static String	_DEL		= "delete";
 	private static String	_INS		= "insert";
 	private static String	_MOD		= "update";
@@ -49,10 +57,12 @@ public class AddressCtrl {
 		return returnVOs;
 	}
 
-	public List<AddressVO> sendAll() throws Exception {
+	public List<AddressVO> sendAll() {
 		List<AddressVO>	selectAll	= null;
 		RetrieveEntity	ret			= new RetrieveEntity();
-		selectAll = ret.selectList();
+		AddressVO		pVO			= new AddressVO();
+		pVO.setCommand("selectAll");
+		selectAll = ret.selectList(pVO);
 		System.out.println("sendAll() 호출 성공 - return type : List<AddressVO>");
 		return selectAll;
 	}
