@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 			<dataSource type="POOLED">
 				<property name="driver" value="oracle.jdbc.driver.OracleDriver" />
 				<property name="url" value="jdbc:oracle:thin:@121.139.85.156:15210:orcl11" />
-				<property name="username" value="SCOTT" />
+				<property name="username" value="GEUNDU" />
 				<property name="password" value="tiger" />
 			</dataSource>
 		</environment>
@@ -20,5 +20,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="mybatis/mapper/book.xml" />
 		<mapper resource="mybatis/mapper/zipcode.xml" />
 		<mapper resource="mybatis/mapper/address.xml" />
+		<mapper resource="mybatis/mapper/test.xml" />
+		<mapper resource="mvc/address/mkAddrtb.xml" />
 	</mappers>
 </configuration>
