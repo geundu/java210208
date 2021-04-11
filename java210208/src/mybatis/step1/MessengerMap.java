@@ -26,13 +26,6 @@ public class MessengerMap {
 		map.put("id", "");
 		map.put("password", "");
 		map.put("nickname", "");
-		
-		
-		map.put("chat_no_nu", "");
-		map.put("mem_id_vc", "");
-		map.put("room_no_nu", -1);
-		map.put("chat_vc", "");
-		
 		/* 모든 테이블의 컬럼 미리 put 해놓기 */
 	}
 

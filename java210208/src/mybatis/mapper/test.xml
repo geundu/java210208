@@ -2,22 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="mybatis.mapper.testMapper">
 
-	<resultMap id="selectMapList" type="map">
-		<result column="ID" property="id" />
+	<resultMap id="testMap" type="map">
+		<!-- <result column="ID" property="id" />
 		<result column="PASSWORD" property="password" />
-		<result column="NICKNAME" property="nickname" />
+		<result column="NICKNAME" property="nickname" /> -->
 	</resultMap>
-	<select id="selectList" parameterType="map" resultMap="selectMapList">
-		SELECT id, nickname FROM chat WHERE id = #{id} AND password = #{password}
+	<select id="selectZipCode" parameterType="map" resultMap="testMap">
+		SELECT *
+		FROM zipcode_t
+		ORDER BY uid_no
 	</select>
-	<select id="selectList2" parameterType="map" resultMap="selectMapList">
-		SELECT * FROM chat
-	</select>
-<!-- 	 <select id="selectTest1" parameterType="map" resultMap="selectMapList">
-		SELECT chat.chat_vc
-		FROM MSGR_CHAT chat, MSGR_ROOM_IN_LIST rlist
-		WHERE chat.chat_no_nu > rlist.chat_no_nu
-		AND chat.room_no_nu = #{room_no_nu}
-		AND rlist.mem_id_vc = #{mem_id_vc}
-	</select>
- --></mapper>
+</mapper>
