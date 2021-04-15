@@ -1,15 +1,41 @@
 package com.base;
 
-public class HelloWorld {
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-	int age = 20;//global variable
-	
-	public static void main(String[] args) {
-		HelloWorld hw = new HelloWorld();
-		hw.age = 28;
-		System.out.println("당신의 나이는 " + hw.age + "입니다");
-		System.out.println("2차 수정입니다");
-		
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class HelloWorld extends JFrame implements ActionListener {
+
+	JButton	button	= new JButton("button");
+	JPanel	panel	= new JPanel(new BorderLayout());
+
+	public void initDislay() {
+
+		button.addActionListener(this);
+		panel.add("North", button);
+		this.add("Center", panel);
+		this.setSize(300, 200);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
+	public static void main(String[] args) {
+		HelloWorld hw = new HelloWorld();
+		hw.initDislay();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+
+		if (obj == button) {
+			panel.setBackground(Color.ORANGE);
+			button.setVisible(false);
+		}
+	}
 }
