@@ -38,7 +38,7 @@ public class HelloMain {
 		System.out.println(herCar);
 
 		Resource	resource	= new FileSystemResource(
-									"D:\\Programming\\git_java210208\\java210208\\java210208\\src\\di\\step1\\helloBean.xml");
+									"D:\\java210208\\java210208\\src\\di\\step1\\helloBean.xml");
 		BeanFactory	factory		= new XmlBeanFactory(resource);
 
 		HelloBean	helloBean	= (HelloBean) context.getBean("helloBean");
