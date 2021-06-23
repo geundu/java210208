@@ -55,7 +55,6 @@ public class WaitRoom extends JPanel implements ActionListener {
 	Room				room			= null;
 
 	public WaitRoom() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public WaitRoom(TalkClientVer2 tc2) {
@@ -140,7 +139,7 @@ public class WaitRoom extends JPanel implements ActionListener {
 												+ Protocol.seperator + 0);
 				}
 				catch (Exception e) {
-					// TODO: handle exception
+					e.printStackTrace();
 				}
 			}
 		} /////////////// end of 방만들기

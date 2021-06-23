@@ -15,7 +15,6 @@ public class ChatDao {
 	ResultSet				rs		= null;
 
 	public ChatDao() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String login(String mem_id, String mem_pwd) {

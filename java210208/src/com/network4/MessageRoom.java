@@ -78,7 +78,6 @@ public class MessageRoom extends JPanel implements ActionListener {
 	}
 
 	public MessageRoom(LoginForm loginForm) {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void initDisplay() {

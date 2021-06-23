@@ -45,7 +45,7 @@ public class TalkServer extends JFrame implements Runnable {
 					System.exit(0);
 				}
 				catch (Exception e) {
-					// TODO: handle exception
+					e.printStackTrace();
 				}
 			}
 		});

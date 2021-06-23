@@ -12,7 +12,6 @@ public class ChatMemberVO {
 	private String	reg_date	= "";
 
 	public ChatMemberVO() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public int getMem_num() {

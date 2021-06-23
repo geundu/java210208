@@ -125,7 +125,7 @@ public class TalkServerThread extends Thread {
 						tst.send(msg);
 					}
 					catch (Exception e) {
-						// TODO: handle exception
+						e.printStackTrace();
 					}
 				}
 			}
@@ -266,7 +266,7 @@ public class TalkServerThread extends Thread {
 			} ///////// end of while
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}///////////////// end of run
 }

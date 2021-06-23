@@ -237,7 +237,7 @@ public class TalkClientThread extends Thread {
 				}////////////// end of switch
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 	}

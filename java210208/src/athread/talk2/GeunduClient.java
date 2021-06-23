@@ -139,7 +139,7 @@ public class GeunduClient extends JFrame implements ActionListener {
 				jtf_msg.setText("");
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 		else if (jbtn_exit == obj) {
@@ -150,7 +150,7 @@ public class GeunduClient extends JFrame implements ActionListener {
 				System.exit(0);
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 		else if (jbtn_change == obj) {
@@ -166,7 +166,7 @@ public class GeunduClient extends JFrame implements ActionListener {
 											+ "으로 변경되었습니다.");
 			}
 			catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 	}////////////////////// end of actionPerformed

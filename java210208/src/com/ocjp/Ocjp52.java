@@ -51,13 +51,11 @@ public class Ocjp52 extends ImAbstract implements ImInterface{
 
 	@Override
 	public void methodA() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void iminterface() {
-		// TODO Auto-generated method stub
 		
 	}
 }
